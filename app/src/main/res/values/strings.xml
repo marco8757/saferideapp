@@ -2,7 +2,7 @@
     <string name="app_name">SafeRide</string>
 
     <string name="action_settings">Settings</string>
-    <string name="register_2">I don't have an account yet.</string>
+    <string name="register_2">I do not have an account yet.</string>
     <string name="login">Login</string>
     <string name="email">Email Address</string>
     <string name="password">Password</string>
