@@ -48,7 +48,7 @@ public class Dashboard extends Activity implements View.OnClickListener {
                 break;
             case R.id.tvDViewReports:
             case R.id.ivDViewReports:
-                Intent viewreport = new Intent(Dashboard.this, NewReport.class);
+                Intent viewreport = new Intent(Dashboard.this, ReportLists.class);
                 startActivity(viewreport);
                 break;
             case R.id.tvDMyProfile:
