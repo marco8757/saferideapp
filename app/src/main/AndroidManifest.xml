@@ -20,6 +20,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".Dashboard" />
         <activity android:name=".ReportLists" />
+        <activity android:name=".NewReport" />
+        <activity android:name=".Profile" />
     </application>
 
 </manifest>
