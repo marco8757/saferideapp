@@ -20,42 +20,47 @@ import java.util.List;
  */
 public class ReportLists extends Activity {
 
-    private static final String TASKS_URL = "http://10.0.2.2:3000/api/v1/tasks.json";
-
+    private static final String REPORTS_URL = "http://192.168.1.131:8080/reports.json";
+    ListView lvReport;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.report_lists);
-
-        loadTasksFromAPI(TASKS_URL);
+        lvReport = (ListView) findViewById (R.id.lvRList);
+        loadReportsFromServer(REPORTS_URL);
     }
 
-    private void loadTasksFromAPI(String url) {
-        GetTasksTask getTasksTask = new GetTasksTask(ReportLists.this);
-        getTasksTask.setMessageLoading("Loading tasks...");
-        getTasksTask.execute(url);
+    private void loadReportsFromServer(String url) {
+        GetReportTask getReport = new GetReportTask(ReportLists.this);
+        getReport.setMessageLoading("Loading reports...");
+        getReport.execute(url);
     }
 
-    private class GetTasksTask extends UrlJsonAsyncTask {
-        public GetTasksTask(Context context) {
+    private class GetReportTask extends UrlJsonAsyncTask {
+        public GetReportTask(Context context) {
             super(ReportLists.this);
         }
 
         @Override
         protected void onPostExecute(JSONObject json) {
             try {
-                JSONArray jsonTasks = json.getJSONObject("data").getJSONArray("tasks");
-                int length = jsonTasks.length();
-                List<String> tasksTitles = new ArrayList<String>(length);
+                JSONArray jsonReports = json.getJSONObject("data").getJSONArray("reports");
+                int length = jsonReports.length();
+                List<String> reportID = new ArrayList<String>(length);
+                List<String> reportLat = new ArrayList<String>(length);
+                List<String> reportLng = new ArrayList<String>(length);
+
 
                 for (int i = 0; i < length; i++) {
-                    tasksTitles.add(jsonTasks.getJSONObject(i).getString("title"));
+                    reportID.add(jsonReports.getJSONObject(i).getString("id"));
+                    reportLat.add(jsonReports.getJSONObject(i).getString("defects_lat"));
+                    reportLng.add(jsonReports.getJSONObject(i).getString("defects_lng"));
                 }
 
-                ListView tasksListView = (ListView) findViewById (R.id.lvR);
-                if (tasksListView != null) {
-                    tasksListView.setAdapter(new ArrayAdapter<String>(ReportLists.this,
-                            android.R.layout.simple_list_item_1, tasksTitles));
+
+                if (lvReport != null) {
+                    lvReport.setAdapter(new ArrayAdapter<String>(ReportLists.this,
+                            android.R.layout.simple_list_item_1, reportID));
                 }
             } catch (Exception e) {
                 Toast.makeText(context, e.getMessage(),

@@ -12,4 +12,7 @@
     <string name="profile">My Profile</string>
     <string name="terms">By clicking Register, you agree to the terms and conditions.</string>
     <string name="register">Register</string>
+    <string name="reported">Reported by:</string>
+    <string name="comment">Say something nice</string>
+    <string name="post">Post</string>
 </resources>
