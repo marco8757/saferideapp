@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Email Address"
+            android:hint="@string/email"
             android:inputType="textEmailAddress" >
 
             <requestFocus android:layout_width="wrap_content" />
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword" />
 
         <EditText
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Re-enter Password"
+            android:hint="@string/password_confirmation"
             android:inputType="textPassword" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="10dp"
-            android:text="By clicking register you agree with the terms."
+            android:text="@string/terms"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <Button
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Register" />
+            android:text="@string/register" />
     </LinearLayout>
 
 </ScrollView>
