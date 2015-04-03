@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">SafeRide</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="register_2">I don't have an account yet.</string>
+    <string name="login">Login</string>
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
+    <string name="password_confirmation">Re-Enter Password</string>
+    <string name="new_report">New Report</string>
+    <string name="view_report">View Reports</string>
+    <string name="profile">My Profile</string>
+    <string name="terms">By clicking Register, you agree to the terms and conditions.</string>
+    <string name="register">Register</string>
 </resources>
