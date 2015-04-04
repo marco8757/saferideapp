@@ -14,5 +14,6 @@
     <string name="register">Register</string>
     <string name="reported">Reported by:</string>
     <string name="comment">Say something nice</string>
+    <string name="comments">Comments</string>
     <string name="post">Post</string>
 </resources>
