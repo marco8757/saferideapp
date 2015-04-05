@@ -37,6 +37,7 @@ import java.util.List;
 public class ReportDetails extends Activity {
 
     private final String ratingURL = "http://192.168.1.131:8080/api/v1/rate.json";
+    private final String commentURL = "http://192.168.1.131:8080/api/v1/comment.json";
     RatingBar rb;
     Button bPost;
     EditText etComment;
@@ -112,6 +113,14 @@ public class ReportDetails extends Activity {
                     @Override
                     public void onClick(View v) {
                         comment = etComment.getText().toString();
+                        if (!comment.isEmpty()) {
+                            PostCommentTask commentTask = new PostCommentTask(ReportDetails.this);
+                            commentTask.setMessageLoading("Posting comment...");
+                            commentTask.execute(commentURL);
+                        }else{
+                            Toast.makeText(ReportDetails.this, "Please fill in comment and try again.", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 });
                 rb.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
@@ -186,6 +195,74 @@ public class ReportDetails extends Activity {
             try {
                 if (json.getBoolean("success")) {
                     Toast.makeText(ReportDetails.this, "Successfully rated this report.", Toast.LENGTH_LONG).show();
+                }
+
+            } catch (Exception e) {
+                // something went wrong: show a Toast
+                // with the exception message
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            } finally {
+                super.onPostExecute(json);
+            }
+        }
+    }
+
+    private class PostCommentTask extends UrlJsonAsyncTask {
+        public PostCommentTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... urls) {
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(urls[0]);
+            JSONObject holder = new JSONObject();
+            JSONObject commentObj = new JSONObject();
+            String response = null;
+            JSONObject json = new JSONObject();
+
+            try {
+                try {
+                    // setup the returned values in case
+                    // something goes wrong
+                    json.put("success", false);
+                    json.put("info", "Something went wrong. Retry!");
+
+                    commentObj.put("content", comment);
+                    commentObj.put("report_id", reportID);
+                    commentObj.put("user_id", userID);
+                    holder.put("comment", commentObj);
+                    StringEntity se = new StringEntity(holder.toString());
+                    post.setEntity(se);
+
+                    // setup the request headers
+                    post.setHeader("Accept", "application/json");
+                    post.setHeader("Content-Type", "application/json");
+
+                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                    response = client.execute(post, responseHandler);
+                    json = new JSONObject(response);
+
+                } catch (HttpResponseException e) {
+                    e.printStackTrace();
+                    Log.e("ClientProtocol", "" + e);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("IO", "" + e);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("JSON", "" + e);
+            }
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            try {
+                if (json.getBoolean("success")) {
+                    Toast.makeText(ReportDetails.this, "Successfully posted your comment.", Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {
