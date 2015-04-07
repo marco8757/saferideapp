@@ -2,16 +2,24 @@ package com.cylim.saferide;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by marco on 30/3/15.
  */
 public class Dashboard extends Activity implements View.OnClickListener {
 
+    private static final int CAMERA_PICTURE = 1337;
     ImageView ivNewReport, ivViewReport, ivProfile;
     TextView tvNewReport, tvViewReport, tvProfile;
 
@@ -43,8 +51,9 @@ public class Dashboard extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.tvDNewReport:
             case R.id.ivDNewReport:
-                Intent newreport = new Intent(Dashboard.this, NewReport.class);
-                startActivity(newreport);
+                Intent newreport = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(newreport, CAMERA_PICTURE);
+
                 break;
             case R.id.tvDViewReports:
             case R.id.ivDViewReports:
@@ -60,4 +69,16 @@ public class Dashboard extends Activity implements View.OnClickListener {
         }
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_PICTURE){
+            Toast.makeText(Dashboard.this, "CAMERA LAUNCHED", Toast.LENGTH_LONG).show();
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            //post thumbnail to server
+
+        }
+    }
+
+
 }
