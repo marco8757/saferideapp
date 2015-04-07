@@ -53,7 +53,6 @@ public class Dashboard extends Activity implements View.OnClickListener {
             case R.id.ivDNewReport:
                 Intent newreport = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(newreport, CAMERA_PICTURE);
-
                 break;
             case R.id.tvDViewReports:
             case R.id.ivDViewReports:
@@ -73,9 +72,28 @@ public class Dashboard extends Activity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_PICTURE){
-            Toast.makeText(Dashboard.this, "CAMERA LAUNCHED", Toast.LENGTH_LONG).show();
-            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-            //post thumbnail to server
+            try {
+                Toast.makeText(Dashboard.this, "CAMERA LAUNCHED", Toast.LENGTH_LONG).show();
+                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                Log.d("ImageRaw", data.getExtras().get("data").toString());
+                //post thumbnail to server
+                ivNewReport.setImageBitmap(thumbnail);
+                GPSTagger gps = new GPSTagger(Dashboard.this);
+
+                if (gps.canGetLocation()) {
+
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+
+                    Log.d("GPSTagger Location", latitude + " " + longitude);
+                } else {
+                    gps.showSettingsAlert();
+                }
+
+            }catch (RuntimeException e){
+                Log.d("Dashboard", e.toString());
+                Toast.makeText(Dashboard.this, "Oops, failed to capture picture.", Toast.LENGTH_LONG).show();
+            }
 
         }
     }
