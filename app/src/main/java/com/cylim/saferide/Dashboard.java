@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -40,6 +42,8 @@ public class Dashboard extends Activity implements View.OnClickListener {
     Bitmap thumbnail;
     GPSTagger gps;
     double lat, lng;
+    private SensorManager mSensorManager;
+    private MovementDetector movementDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,16 @@ public class Dashboard extends Activity implements View.OnClickListener {
         tvNewReport.setOnClickListener(Dashboard.this);
         tvViewReport.setOnClickListener(Dashboard.this);
         tvProfile.setOnClickListener(Dashboard.this);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        movementDetector = new MovementDetector();
+
+        movementDetector.setOnShakeListener(new MovementDetector.OnShakeListener() {
+
+            public void onShake() {
+                Toast.makeText(Dashboard.this, "Shake!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -85,6 +99,20 @@ public class Dashboard extends Activity implements View.OnClickListener {
 
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(movementDetector,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    protected void onPause() {
+        mSensorManager.unregisterListener(movementDetector);
+        super.onPause();
     }
 
     @Override
