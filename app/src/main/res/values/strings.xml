@@ -16,4 +16,5 @@
     <string name="comment">Say something nice</string>
     <string name="comments">Comments</string>
     <string name="post">Post</string>
+    <string name="logout">Log Out</string>
 </resources>
