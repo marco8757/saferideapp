@@ -1,14 +1,12 @@
 package com.cylim.saferide;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,14 +26,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
-    Button bLogin,bRegister;
-    EditText etEmail, etPassword;
-    private String rEmail,rPassword,rPassword2;
-    private SharedPreferences mPreferences;
     private final static String LOGIN_API_ENDPOINT_URL = "http://192.168.1.131:8080/api/v1/sessions.json";
     private final static String REGISTER_API_ENDPOINT_URL = "http://192.168.1.131:8080/api/v1/registrations";
+    Button bLogin, bRegister;
+    EditText etEmail, etPassword;
+    private String rEmail, rPassword, rPassword2;
+    private SharedPreferences mPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
 
-                        if (etREmail.getText().toString().length() == 0 || etRPassword.getText().toString().length() == 0 || etRPassword2.getText().toString().length() == 0 ) {
+                        if (etREmail.getText().toString().length() == 0 || etRPassword.getText().toString().length() == 0 || etRPassword2.getText().toString().length() == 0) {
                             // input fields are empty
                             Toast.makeText(MainActivity.this, "Please complete all the fields",
                                     Toast.LENGTH_LONG).show();
@@ -177,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
                     // save the returned auth_token into
                     // the SharedPreferences
                     editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
-                    editor.putString("UserID",json.getJSONObject("data").getString("user_id"));
+                    editor.putString("UserID", json.getJSONObject("data").getString("user_id"));
                     editor.commit();
 
                     // launch the HomeActivity and close this one
@@ -195,7 +193,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-
 
 
     private class RegisterTask extends UrlJsonAsyncTask {
@@ -259,7 +256,7 @@ public class MainActivity extends ActionBarActivity {
                     // save the returned auth_token into
                     // the SharedPreferences
                     editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
-                    editor.putString("UserID",json.getJSONObject("data").getString("user_id"));
+                    editor.putString("UserID", json.getJSONObject("data").getString("user_id"));
                     editor.commit();
 
 //                    // launch the HomeActivity and close this one
@@ -278,25 +275,4 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
