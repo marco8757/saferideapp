@@ -1,11 +1,20 @@
 package com.cylim.saferide;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,24 +22,55 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.savagelook.android.UrlJsonAsyncTask;
+
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by marco on 12/4/15.
  */
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
+    Bitmap thumbnail;
+    List<String> list_lat,list_lng;
+    private static final int CAMERA_PICTURE = 1337;
+    private final String reportURL = "http://192.168.1.131:8080/api/v1/reports.json";
+    private static final String REPORTS_URL = "http://192.168.1.131:8080/reports.json";
+    GPSTagger gps;
+    double lat, lng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
+        GetReportTask getReport = new GetReportTask(MapActivity.this);
+        getReport.setMessageLoading("Loading reports...");
+        getReport.execute(REPORTS_URL);
 
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.mapM);
-        mapFragment.getMapAsync(this);
 
     }
 
+    private void setupMap(){
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.mapM);
+        mapFragment.getMapAsync(this);
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         double lat = 0, lng = 0;
@@ -52,10 +92,13 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 13));
 
-        googleMap.addMarker(new MarkerOptions()
-                .title("It's me here.")
-                .snippet("This is where I am now.")
-                .position(mylocation));
+        for (int i = 0; i < list_lat.size(); i++){
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))));
+
+            ///later can add title, snippet for more information
+        }
+
     }
 
     @Override
@@ -67,13 +110,12 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         switch (id) {
             case R.id.action_new_report:
+                Intent newreport = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(newreport, CAMERA_PICTURE);
                 break;
             case R.id.action_profile:
                 break;
@@ -82,5 +124,155 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_PICTURE) {
+            try {
+                thumbnail = (Bitmap) data.getExtras().get("data");
+                Log.d("ImageRaw", data.getExtras().get("data").toString());
+                gps = new GPSTagger(MapActivity.this);
+
+                if (gps.canGetLocation()) {
+
+                    lat = gps.getLatitude();
+                    lng = gps.getLongitude();
+
+                    Log.d("GPSTagger Location", lat + " " + lng);
+
+                    NewReport nr = new NewReport(MapActivity.this);
+                    nr.setMessageLoading("Uploading picture...");
+                    nr.execute(reportURL);
+
+                } else {
+                    gps.showSettingsAlert();
+                }
+
+
+            } catch (RuntimeException e) {
+                Log.d("Dashboard", e.toString());
+                Toast.makeText(MapActivity.this, "Oops, failed to capture picture.", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+    }
+
+    public static String encodeTobBase64(Bitmap image) {
+
+        if (image == null)
+            return null;
+
+        Bitmap bm = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        byte[] b = baos.toByteArray();
+
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return imageEncoded;
+    }
+
+    private class NewReport extends UrlJsonAsyncTask {
+        public NewReport(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... urls) {
+            DefaultHttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(urls[0]);
+            JSONObject holder = new JSONObject();
+            JSONObject reportObj = new JSONObject();
+            String response = null;
+            JSONObject json = new JSONObject();
+
+            try {
+                try {
+                    json.put("success", false);
+                    json.put("info", "Something went wrong. Retry!");
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
+                    String currentTimeStamp = dateFormat.format(new Date());
+
+                    reportObj.put("picture", "data:image/jpg;base64,("+ encodeTobBase64(thumbnail) + ")");
+                    reportObj.put("defects_lat", lat);
+                    reportObj.put("defects_lng", lng);
+                    reportObj.put("report_time", currentTimeStamp);
+                    holder.put("report", reportObj);
+                    StringEntity se = new StringEntity(holder.toString());
+                    post.setEntity(se);
+
+                    // setup the request headers
+                    post.setHeader("Accept", "application/json");
+                    post.setHeader("Content-Type", "application/json");
+
+                    ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                    response = client.execute(post, responseHandler);
+                    json = new JSONObject(response);
+
+                } catch (HttpResponseException e) {
+                    e.printStackTrace();
+                    Log.e("ClientProtocol", "" + e);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("IO", "" + e);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("JSON", "" + e);
+            }
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            try {
+                if (json.getBoolean("success")) {
+                    Toast.makeText(MapActivity.this, "Successfully submitted your report.", Toast.LENGTH_LONG).show();
+                }
+
+            } catch (Exception e) {
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            } finally {
+                super.onPostExecute(json);
+            }
+        }
+    }
+
+    private class GetReportTask extends UrlJsonAsyncTask {
+        public GetReportTask(Context context) {
+            super(MapActivity.this);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            try {
+                JSONArray jsonReports = json.getJSONObject("data").getJSONArray("reports");
+                int length = jsonReports.length();
+                List<String> reportID = new ArrayList<String>(length);
+                List<String> reportLat = new ArrayList<String>(length);
+                List<String> reportLng = new ArrayList<String>(length);
+
+
+                for (int i = 0; i < length; i++) {
+                    reportID.add(jsonReports.getJSONObject(i).getString("id"));
+                    reportLat.add(jsonReports.getJSONObject(i).getString("defects_lat"));
+                    reportLng.add(jsonReports.getJSONObject(i).getString("defects_lng"));
+                }
+                list_lat = new ArrayList<String>(reportLat);
+                list_lng = new ArrayList<String>(reportLng);
+
+            } catch (Exception e) {
+                Toast.makeText(context, e.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            } finally {
+                super.onPostExecute(json);
+                setupMap();
+            }
+        }
     }
 }
