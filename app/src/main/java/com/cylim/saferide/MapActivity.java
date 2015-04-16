@@ -49,8 +49,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     Bitmap thumbnail;
     List<String> list_lat,list_lng;
     private static final int CAMERA_PICTURE = 1337;
-    private final String reportURL = "http://192.168.1.131:8080/api/v1/reports.json";
-    private static final String REPORTS_URL = "http://192.168.1.131:8080/reports.json";
+    private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
+    private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/reports.json";
     GPSTagger gps;
     double lat, lng;
 
@@ -113,6 +113,10 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_view_report:
+                Intent viewreport = new Intent(MapActivity.this, ReportLists.class);
+                startActivity(viewreport);
+                break;
             case R.id.action_new_report:
                 Intent newreport = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(newreport, CAMERA_PICTURE);

@@ -36,7 +36,7 @@ import java.util.Date;
 public class Dashboard extends Activity implements View.OnClickListener {
 
     private static final int CAMERA_PICTURE = 1337;
-    private final String reportURL = "http://192.168.1.131:8080/api/v1/reports.json";
+    private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
     ImageView ivNewReport, ivViewReport, ivProfile;
     TextView tvNewReport, tvViewReport, tvProfile;
     Bitmap thumbnail;

@@ -28,8 +28,8 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
 
-    private final static String LOGIN_API_ENDPOINT_URL = "http://192.168.1.131:8080/api/v1/sessions.json";
-    private final static String REGISTER_API_ENDPOINT_URL = "http://192.168.1.131:8080/api/v1/registrations";
+    private final static String LOGIN_API_ENDPOINT_URL = "http://saferidebymarco.herokuapp.com/api/v1/sessions.json";
+    private final static String REGISTER_API_ENDPOINT_URL = "http://saferidebymarco.herokuapp.com/api/v1/registrations";
     Button bLogin, bRegister;
     EditText etEmail, etPassword;
     private String rEmail, rPassword, rPassword2;

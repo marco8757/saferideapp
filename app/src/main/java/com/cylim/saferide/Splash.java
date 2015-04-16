@@ -38,7 +38,7 @@ public class Splash extends Activity {
                     Intent i = new Intent(Splash.this,MainActivity.class);
 
                     if (token.length() > 0 ){
-                       i = new Intent(Splash.this,Dashboard.class);
+                       i = new Intent(Splash.this,MapActivity.class);
                     }
 
                     startActivity(i);

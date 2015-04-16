@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class ReportLists extends Activity {
 
-    private static final String REPORTS_URL = "http://192.168.1.131:8080/reports.json";
+    private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/reports.json";
     ListView lvReport;
 
     List<String> reportURL;

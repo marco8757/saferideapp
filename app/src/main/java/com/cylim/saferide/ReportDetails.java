@@ -36,8 +36,8 @@ import java.util.List;
  */
 public class ReportDetails extends Activity {
 
-    private final String ratingURL = "http://192.168.1.131:8080/api/v1/rate.json";
-    private final String commentURL = "http://192.168.1.131:8080/api/v1/comment.json";
+    private final String ratingURL = "http://saferidebymarco.herokuapp.com/api/v1/rate.json";
+    private final String commentURL = "http://saferidebymarco.herokuapp.com/api/v1/comment.json";
     RatingBar rb;
     Button bPost;
     EditText etComment;
