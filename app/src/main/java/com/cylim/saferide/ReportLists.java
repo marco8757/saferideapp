@@ -28,6 +28,7 @@ public class ReportLists extends Activity {
     ListView lvReport;
 
     List<String> reportURL;
+    List<String> reportAuthor;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,7 @@ public class ReportLists extends Activity {
                 List<String> reportLat = new ArrayList<String>(length);
                 List<String> reportLng = new ArrayList<String>(length);
                 List<String> reportImage = new ArrayList<String>(length);
+                reportAuthor = new ArrayList<String>(length);
                 reportURL = new ArrayList<String>(length);
 
 
@@ -63,6 +65,7 @@ public class ReportLists extends Activity {
                     reportID.add(jsonReports.getJSONObject(i).getString("id"));
                     reportLat.add(jsonReports.getJSONObject(i).getString("defects_lat"));
                     reportLng.add(jsonReports.getJSONObject(i).getString("defects_lng"));
+                    reportAuthor.add(jsonReports.getJSONObject(i).getString("name"));
                     reportURL.add(jsonReports.getJSONObject(i).getString("url"));
                     reportImage.add(jsonReports.getJSONObject(i).getString("picture_url"));
 
@@ -86,6 +89,7 @@ public class ReportLists extends Activity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                         Intent i = new Intent(ReportLists.this,ReportDetails.class);
+                        i.putExtra("Name", reportAuthor.get((int) id));
                         i.putExtra("ReportURL", reportURL.get((int) id));
                         startActivity(i);
                     }

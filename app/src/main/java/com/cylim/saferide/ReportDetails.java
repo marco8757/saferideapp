@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.savagelook.android.UrlJsonAsyncTask;
@@ -42,6 +43,7 @@ public class ReportDetails extends Activity {
     Button bPost;
     EditText etComment;
     ListView lvComments;
+    TextView tvAuthor;
     String URL;
     String comment;
     String reportID, lat, lng, rate, userID;
@@ -55,6 +57,7 @@ public class ReportDetails extends Activity {
         bPost = (Button) findViewById(R.id.bRPost);
         etComment = (EditText) findViewById(R.id.etRComment);
         lvComments = (ListView) findViewById(R.id.lvRComments);
+        tvAuthor = (TextView) findViewById(R.id.tvRReportedBy);
         rb.setStepSize(1);
 
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
@@ -62,6 +65,7 @@ public class ReportDetails extends Activity {
 
         Bundle b = getIntent().getExtras();
         URL = b.getString("ReportURL");
+        tvAuthor.setText("Reported by: " + b.getString("Name"));
 
         loadReportsFromServer(URL);
     }
