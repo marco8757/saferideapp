@@ -89,17 +89,21 @@ public class ReportDetails extends Activity {
                 int length = jsonComments.length();
                 List<String> commentID = new ArrayList<String>(length);
                 List<String> commentContent = new ArrayList<String>(length);
+                List<String> commentAuthor = new ArrayList<String>(length);
 
                 if (length > 0) {
                     for (int i = 0; i < length; i++) {
                         commentID.add(jsonComments.getJSONObject(i).getString("id"));
                         commentContent.add(jsonComments.getJSONObject(i).getString("content"));
+                        commentAuthor.add(jsonComments.getJSONObject(i).getString("name"));
                     }
                 }
 
                 if (lvComments != null) {
-                    lvComments.setAdapter(new ArrayAdapter<String>(ReportDetails.this,
-                            android.R.layout.simple_list_item_1, commentContent));
+
+                    CommentCustomListAdapter adapter = new CommentCustomListAdapter(ReportDetails.this,
+                            R.layout.custom_comment_list_item, commentContent , commentAuthor);
+                    lvComments.setAdapter(adapter);
 
                 }
 
