@@ -55,6 +55,7 @@ public class ReportLists extends Activity {
                 List<String> reportID = new ArrayList<String>(length);
                 List<String> reportLat = new ArrayList<String>(length);
                 List<String> reportLng = new ArrayList<String>(length);
+                List<String> reportImage = new ArrayList<String>(length);
                 reportURL = new ArrayList<String>(length);
 
 
@@ -63,12 +64,14 @@ public class ReportLists extends Activity {
                     reportLat.add(jsonReports.getJSONObject(i).getString("defects_lat"));
                     reportLng.add(jsonReports.getJSONObject(i).getString("defects_lng"));
                     reportURL.add(jsonReports.getJSONObject(i).getString("url"));
+                    reportImage.add(jsonReports.getJSONObject(i).getString("picture_url"));
+
+
                 }
-
                 if (lvReport != null) {
-                    lvReport.setAdapter(new ArrayAdapter<String>(ReportLists.this,
-                            android.R.layout.simple_list_item_1, reportID));
-
+                    ReportCustomListAdapter adapter = new ReportCustomListAdapter(ReportLists.this,
+                            R.layout.custom_report_list_item, reportImage , reportLat, reportLng);
+                    lvReport.setAdapter(adapter);
                 }
             } catch (Exception e) {
                 Toast.makeText(context, e.getMessage(),

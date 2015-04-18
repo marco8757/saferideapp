@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by marco on 18/4/15.
@@ -22,37 +24,18 @@ import java.net.URL;
 public class ReportCustomListAdapter extends ArrayAdapter<String> {
 
     Context context;
-    String[] image;
-    String[] lat;
-    String[] lng;
-    String[] author;
+    List<String> reportImage;
+    List<String> reportLat;
+    List<String> reportLng;
 
-    public ReportCustomListAdapter(Context context, int resource, String[] image,
-                                   String[] lat, String[] lng, String[] author) {
+    public ReportCustomListAdapter(Context context, int resource, List<String> image,
+                                   List<String> lat, List<String> lng) {
         super(context, resource, image);
         // TODO Auto-generated constructor stub
         this.context = context;
-        this.image = image;
-        this.lat = lat;
-        this.lng = lng;
-        this.author = author;
-    }
-
-    public static Bitmap bitmapFromURL(String src) {
-        try {
-            Log.e("src", src);
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("Exception", e.getMessage());
-            return null;
-        }
+        this.reportImage = image;
+        this.reportLat = lat;
+        this.reportLng = lng;
     }
 
     @Override
@@ -67,10 +50,7 @@ public class ReportCustomListAdapter extends ArrayAdapter<String> {
                 .findViewById(R.id.tvCRLcoor);
         ImageView ivPicture = (ImageView) ReportView.findViewById(R.id.ivCRL);
 
-        tvAuthor.setText(author[position]);
-        tvCoordinate.setText("At: " + lat[position] + ", " + lng[position]);
-        ivPicture.setImageBitmap(bitmapFromURL(image[position]));
-
+        tvCoordinate.setText("At: " + reportLat.get(position) + ", " + reportLng.get(position));
 
         return ReportView;
     }
