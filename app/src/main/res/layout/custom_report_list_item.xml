@@ -36,7 +36,8 @@
             <TextView
                 android:id="@+id/tvCRLcoor"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="#ff3f3f3f" />
 
         </LinearLayout>
 
@@ -49,7 +50,8 @@
             <TextView
                 android:id="@+id/tvCRLBy"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="#ff3f3f3f" />
         </LinearLayout>
 
 

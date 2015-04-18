@@ -22,7 +22,8 @@
                 android:id="@+id/tvRReportedBy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reported" />
+                android:text="@string/reported"
+                android:textColor="#ff3f3f3f" />
 
             <RatingBar
                 android:id="@+id/rbRRating"
@@ -60,7 +61,8 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:text="@string/comments"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff000000" />
 
     <ListView
         android:id="@+id/lvRComments"
