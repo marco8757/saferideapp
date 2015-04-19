@@ -16,6 +16,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.savagelook.android.UrlJsonAsyncTask;
 
 import org.apache.http.client.HttpResponseException;
@@ -35,7 +41,7 @@ import java.util.List;
 /**
  * Created by marco on 4/4/15.
  */
-public class ReportDetails extends Activity {
+public class ReportDetails extends Activity implements OnMapReadyCallback{
 
     private final String ratingURL = "http://saferidebymarco.herokuapp.com/api/v1/rate.json";
     private final String commentURL = "http://saferidebymarco.herokuapp.com/api/v1/comment.json";
@@ -74,6 +80,23 @@ public class ReportDetails extends Activity {
         GetReportTask getReport = new GetReportTask(ReportDetails.this);
         getReport.setMessageLoading("Loading report...");
         getReport.execute(url);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        LatLng defect = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+
+        googleMap.setMyLocationEnabled(true);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defect, 13));
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(defect));
+    }
+
+    private void setupMap(){
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.mapR);
+        mapFragment.getMapAsync(this);
     }
 
     private class GetReportTask extends UrlJsonAsyncTask {
@@ -141,6 +164,8 @@ public class ReportDetails extends Activity {
                         updateRate.execute(ratingURL);
                     }
                 });
+
+                setupMap();
 
             }
         }

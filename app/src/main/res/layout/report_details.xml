@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:weightSum="1">
+    android:weightSum="2">
 
 
     <ScrollView
@@ -17,6 +17,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/mapR"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
 
             <TextView
                 android:id="@+id/tvRReportedBy"
@@ -53,20 +59,14 @@
                     android:text="@string/post" />
 
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:text="@string/comments"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff000000" />
 
     <ListView
         android:id="@+id/lvRComments"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent" />
+
+
 </LinearLayout>
