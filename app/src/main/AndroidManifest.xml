@@ -28,6 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".AccelService" android:enabled="true" >
+
+        </service>
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden" />
