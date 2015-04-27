@@ -3,6 +3,7 @@ package com.cylim.saferide;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -51,6 +52,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     private static final int CAMERA_PICTURE = 1337;
     private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
     private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/reports.json";
+    private SharedPreferences mPreferences;
+    private String userID;
     GPSTagger gps;
     double lat, lng;
 
@@ -58,6 +61,9 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
+
+        mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
+        userID = mPreferences.getString("UserID","");
         GetReportTask getReport = new GetReportTask(MapActivity.this);
         getReport.setMessageLoading("Loading reports...");
         getReport.execute(REPORTS_URL);
@@ -204,6 +210,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                     reportObj.put("picture", "data:image/jpg;base64,("+ encodeTobBase64(thumbnail) + ")");
                     reportObj.put("defects_lat", lat);
                     reportObj.put("defects_lng", lng);
+                    reportObj.put("user_id", userID);
                     reportObj.put("report_time", currentTimeStamp);
                     holder.put("report", reportObj);
                     StringEntity se = new StringEntity(holder.toString());
