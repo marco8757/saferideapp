@@ -9,6 +9,9 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by marco on 21/4/15.
  */
@@ -17,6 +20,8 @@ public class AccelService extends Service {
 
     private SensorManager mSensorManager;
     private MovementDetector movementDetector;
+    double lat, lng;
+    GPSTagger gps;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -27,13 +32,31 @@ public class AccelService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        gps = new GPSTagger(AccelService.this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         movementDetector = new MovementDetector();
 
         movementDetector.setOnShakeListener(new MovementDetector.OnShakeListener() {
 
             public void onShake() {
-                Log.d("SHAKED", "true");
+
+                if (gps.canGetLocation()) {
+
+                    lat = gps.getLatitude();
+                    lng = gps.getLongitude();
+
+                    Log.d("GPSTagger Location", lat + " " + lng);
+
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String formattedDate = df.format(c.getTime());
+                    DatabaseHandler db = new DatabaseHandler(AccelService.this);
+                    db.addReport(lat,lng,formattedDate);
+
+                } else {
+                    gps.showSettingsAlert();
+                }
+
             }
         });
     }
