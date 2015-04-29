@@ -56,19 +56,23 @@ public class UrlJsonAsyncTask extends AsyncTask<String, Void, JSONObject> {
 	
 	@Override 
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(
-			this.context, 
-			this.loadingTitle, 
-			this.messageLoading, 
-			true,
-			true,
-			new DialogInterface.OnCancelListener() {	
-				@Override
-				public void onCancel(DialogInterface arg0) {
-					UrlJsonAsyncTask.this.cancel(true);
-				}
-			}
-		);
+        try {
+            progressDialog = ProgressDialog.show(
+                    this.context,
+                    this.loadingTitle,
+                    this.messageLoading,
+                    true,
+                    true,
+                    new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface arg0) {
+                            UrlJsonAsyncTask.this.cancel(true);
+                        }
+                    }
+            );
+        }catch (Exception e){
+            Log.e("ProgressDialog", e.toString());
+        }
 	}
 	
 	@Override
