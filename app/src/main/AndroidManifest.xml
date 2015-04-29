@@ -33,6 +33,10 @@
             android:name=".AccelService"
             android:enabled="true">
         </service>
+        <service
+            android:name=".UploadService"
+            android:enabled="true">
+        </service>
         <receiver android:name=".WiFiBroadcastReceiver" android:label="WiFiReceiver">
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
