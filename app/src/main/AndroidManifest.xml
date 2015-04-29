@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-feature android:name="android.hardware.camera"></uses-feature>
     <uses-feature
@@ -28,9 +29,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".AccelService" android:enabled="true" >
-
+        <service
+            android:name=".AccelService"
+            android:enabled="true">
         </service>
+        <receiver android:name=".WiFiBroadcastReceiver" android:label="WiFiReceiver">
+            <intent-filter>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden" />
