@@ -17,7 +17,9 @@ public class WiFiBroadcastReceiver extends BroadcastReceiver {
         NetworkInfo networkInfo = connMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         final boolean isWifiConn = networkInfo.isConnected();
-        //
         Log.d("WiFi connected", String.valueOf(isWifiConn));
+
+        Intent i= new Intent(context, UploadService.class);
+        context.startService(i);
     }
 }
