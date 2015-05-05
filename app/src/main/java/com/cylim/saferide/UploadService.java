@@ -28,6 +28,8 @@ import java.util.Date;
  */
 public class UploadService extends Service {
 
+    private SharedPreferences mPreferences;
+    String userID;
 
     private final static String ACCEL_UPLOAD_ENDPOINT = "http://192.168.1.131:8080/api/v1/accelreport.json";
     @Override
@@ -43,6 +45,9 @@ public class UploadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
+        userID = mPreferences.getString("UserID","");
 
         DatabaseHandler db = new DatabaseHandler(UploadService.this);
         String[][] reports = db.getReports();
@@ -86,6 +91,7 @@ public class UploadService extends Service {
                     reportObj.put("defects_lat", lat);
                     reportObj.put("defects_lng", lng);
                     reportObj.put("report_time", time);
+                    reportObj.put("user_id", userID);
                     holder.put("report", reportObj);
                     StringEntity se = new StringEntity(holder.toString());
                     post.setEntity(se);
