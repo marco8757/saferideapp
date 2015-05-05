@@ -179,7 +179,7 @@ public class MainActivity extends Activity {
                     editor.commit();
 
                     // launch the HomeActivity and close this one
-                    Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+                    Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                     startActivity(intent);
                     finish();
                 }
