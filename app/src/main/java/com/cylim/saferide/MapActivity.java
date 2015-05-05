@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -47,15 +48,31 @@ import java.util.List;
  */
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
 
-    Bitmap thumbnail;
-    List<String> list_lat,list_lng;
     private static final int CAMERA_PICTURE = 1337;
-    private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
     private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/reports.json";
-    private SharedPreferences mPreferences;
-    private String userID;
+    private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
+    Bitmap thumbnail;
+    List<String> list_lat, list_lng, list_by, list_category;
     GPSTagger gps;
     double lat, lng;
+    private SharedPreferences mPreferences;
+    private String userID;
+
+    public static String encodeTobBase64(Bitmap image) {
+
+        if (image == null)
+            return null;
+
+        Bitmap bm = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        byte[] b = baos.toByteArray();
+
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return imageEncoded;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,20 +80,18 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         setContentView(R.layout.map_activity);
 
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
-        userID = mPreferences.getString("UserID","");
+        userID = mPreferences.getString("UserID", "");
         GetReportTask getReport = new GetReportTask(MapActivity.this);
         getReport.setMessageLoading("Loading reports...");
         getReport.execute(REPORTS_URL);
-
-
-
     }
 
-    private void setupMap(){
+    private void setupMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapM);
         mapFragment.getMapAsync(this);
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         double lat = 0, lng = 0;
@@ -98,10 +113,10 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 13));
 
-        for (int i = 0; i < list_lat.size(); i++){
+        for (int i = 0; i < list_lat.size(); i++) {
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))));
-
+            /// add if else for lists
             ///later can add title, snippet for more information
         }
 
@@ -169,22 +184,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     }
 
-    public static String encodeTobBase64(Bitmap image) {
-
-        if (image == null)
-            return null;
-
-        Bitmap bm = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-        byte[] b = baos.toByteArray();
-
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-        return imageEncoded;
-    }
-
     private class NewReport extends UrlJsonAsyncTask {
         public NewReport(Context context) {
             super(context);
@@ -207,7 +206,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
                     String currentTimeStamp = dateFormat.format(new Date());
 
-                    reportObj.put("picture", "data:image/jpg;base64,("+ encodeTobBase64(thumbnail) + ")");
+                    reportObj.put("picture", "data:image/jpg;base64,(" + encodeTobBase64(thumbnail) + ")");
                     reportObj.put("defects_lat", lat);
                     reportObj.put("defects_lng", lng);
                     reportObj.put("user_id", userID);
@@ -267,15 +266,21 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 List<String> reportID = new ArrayList<String>(length);
                 List<String> reportLat = new ArrayList<String>(length);
                 List<String> reportLng = new ArrayList<String>(length);
+                List<String> reportBy = new ArrayList<String>(length);
+                List<String> reportType = new ArrayList<String>(length);
 
 
                 for (int i = 0; i < length; i++) {
                     reportID.add(jsonReports.getJSONObject(i).getString("id"));
                     reportLat.add(jsonReports.getJSONObject(i).getString("defects_lat"));
                     reportLng.add(jsonReports.getJSONObject(i).getString("defects_lng"));
+                    reportBy.add(jsonReports.getJSONObject(i).getString("name"));
+                    reportType.add(jsonReports.getJSONObject(i).getString("cat"));
                 }
                 list_lat = new ArrayList<String>(reportLat);
                 list_lng = new ArrayList<String>(reportLng);
+                list_by = new ArrayList<String>(reportBy);
+                list_category = new ArrayList<String>(reportType);
 
             } catch (Exception e) {
                 Toast.makeText(context, e.getMessage(),
