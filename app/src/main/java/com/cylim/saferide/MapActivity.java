@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.savagelook.android.UrlJsonAsyncTask;
@@ -55,6 +56,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     List<String> list_lat, list_lng, list_by, list_category;
     GPSTagger gps;
     double lat, lng;
+    GoogleMap gm;
     private SharedPreferences mPreferences;
     private String userID;
 
@@ -96,7 +98,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         double lat = 0, lng = 0;
         GPSTagger gpsTagger = new GPSTagger(MapActivity.this);
-
+        gm = googleMap;
         if (gpsTagger.canGetLocation()) {
 
             lat = gpsTagger.getLatitude();
@@ -114,8 +116,13 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 13));
 
         for (int i = 0; i < list_lat.size(); i++) {
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))));
+            if (list_category.get(i).equals("Camera")) {
+                gm.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))));
+            } else {
+                gm.addMarker(new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))).icon(BitmapDescriptorFactory.fromResource(R.mipmap.pin)));
+            }
             /// add if else for lists
             ///later can add title, snippet for more information
         }

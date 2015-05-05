@@ -18,10 +18,10 @@ import java.util.Calendar;
 public class AccelService extends Service {
 
 
-    private SensorManager mSensorManager;
-    private MovementDetector movementDetector;
     double lat, lng;
     GPSTagger gps;
+    private SensorManager mSensorManager;
+    private MovementDetector movementDetector;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -51,7 +51,7 @@ public class AccelService extends Service {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = df.format(c.getTime());
                     DatabaseHandler db = new DatabaseHandler(AccelService.this);
-                    db.addReport(lat,lng,formattedDate);
+                    db.addReport(String.valueOf(lat), String.valueOf(lng), formattedDate);
 
                 } else {
                     gps.showSettingsAlert();

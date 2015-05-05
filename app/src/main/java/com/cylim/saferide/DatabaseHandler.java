@@ -30,12 +30,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         try {
             String CREATE_TABLE_REPORT = "CREATE TABLE " + TABLE_REPORT + "("
                     + KEY_ID + " INTEGER PRIMARY KEY, " + KEY_LAT
-                    + " DOUBLE," + KEY_LNG + " DOUBLE," + KEY_TIME
+                    + " TEXT," + KEY_LNG + " TEXT," + KEY_TIME
                     + " TEXT)";
 
             db.execSQL(CREATE_TABLE_REPORT);
-
-            db.execSQL("INSERT INTO " + TABLE_REPORT + " VALUES ('F-','-1.0','0')");
 
         } catch (Exception e) {
             Log.d("CREATION ERROR", e.toString());
@@ -49,7 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public void addReport(double lat, double lng, String time) {
+    public void addReport(String lat, String lng, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_LAT, lat);
