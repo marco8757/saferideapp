@@ -23,6 +23,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.savagelook.android.UrlJsonAsyncTask;
@@ -120,8 +122,9 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 gm.addMarker(new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))));
             } else {
-                gm.addMarker(new MarkerOptions()
-                        .position(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i)))).icon(BitmapDescriptorFactory.fromResource(R.mipmap.pin)));
+                CircleOptions cOption = new CircleOptions().radius(20).strokeColor(10).strokeColor(0x44ff0000).fillColor(0x44ff0000).center(new LatLng(Double.parseDouble(list_lat.get(i)), Double.parseDouble(list_lng.get(i))));
+
+                Circle circle = gm.addCircle(cOption);
             }
             /// add if else for lists
             ///later can add title, snippet for more information
