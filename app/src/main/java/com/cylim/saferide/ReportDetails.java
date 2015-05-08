@@ -88,7 +88,10 @@ public class ReportDetails extends Activity implements OnMapReadyCallback{
 
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defect, 13));
-
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.getUiSettings().setAllGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.addMarker(new MarkerOptions()
                 .position(defect));
     }
