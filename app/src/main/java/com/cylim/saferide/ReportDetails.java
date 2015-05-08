@@ -46,7 +46,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
     private final String ratingURL = "http://saferidebymarco.herokuapp.com/api/v1/rate.json";
     private final String commentURL = "http://saferidebymarco.herokuapp.com/api/v1/comment.json";
     RatingBar rb;
-    Button bPost;
+    Button bPost, bImage;
     EditText etComment;
     ListView lvComments;
     TextView tvAuthor;
@@ -61,6 +61,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
         setContentView(R.layout.report_details);
         rb = (RatingBar) findViewById(R.id.rbRRating);
         bPost = (Button) findViewById(R.id.bRPost);
+        bImage = (Button) findViewById(R.id.bRViewImage);
         etComment = (EditText) findViewById(R.id.etRComment);
         lvComments = (ListView) findViewById(R.id.lvRComments);
         tvAuthor = (TextView) findViewById(R.id.tvRReportedBy);
@@ -115,6 +116,16 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                 rate = json.getJSONObject("data").getString("ratings");
                 imageURL = json.getJSONObject("data").getString("picture_url");
                 reportID = json.getJSONObject("data").getString("id");
+
+                if (imageURL != "null") {
+                    Log.d("image", imageURL);
+                    bImage.setVisibility(View.VISIBLE);
+                    bImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                        }
+                    });
+                }
 
                 JSONArray jsonComments = json.getJSONObject("data").getJSONArray("comments");
                 int length = jsonComments.length();
