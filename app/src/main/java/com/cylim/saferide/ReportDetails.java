@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Created by marco on 4/4/15.
  */
-public class ReportDetails extends Activity implements OnMapReadyCallback{
+public class ReportDetails extends Activity implements OnMapReadyCallback {
 
     private final String ratingURL = "http://saferidebymarco.herokuapp.com/api/v1/rate.json";
     private final String commentURL = "http://saferidebymarco.herokuapp.com/api/v1/comment.json";
@@ -52,7 +52,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback{
     TextView tvAuthor;
     String URL;
     String comment;
-    String reportID, lat, lng, rate, userID;
+    String reportID, lat, lng, rate, imageURL, userID;
     SharedPreferences mPreferences;
 
     @Override
@@ -96,7 +96,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback{
                 .position(defect));
     }
 
-    private void setupMap(){
+    private void setupMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapR);
         mapFragment.getMapAsync(this);
@@ -113,6 +113,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback{
                 lat = json.getJSONObject("data").getString("defects_lat");
                 lng = json.getJSONObject("data").getString("defects_lng");
                 rate = json.getJSONObject("data").getString("ratings");
+                imageURL = json.getJSONObject("data").getString("picture_url");
                 reportID = json.getJSONObject("data").getString("id");
 
                 JSONArray jsonComments = json.getJSONObject("data").getJSONArray("comments");
@@ -132,7 +133,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback{
                 if (lvComments != null) {
 
                     CommentCustomListAdapter adapter = new CommentCustomListAdapter(ReportDetails.this,
-                            R.layout.custom_comment_list_item, commentContent , commentAuthor);
+                            R.layout.custom_comment_list_item, commentContent, commentAuthor);
                     lvComments.setAdapter(adapter);
 
                 }
@@ -151,7 +152,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback{
                             PostCommentTask commentTask = new PostCommentTask(ReportDetails.this);
                             commentTask.setMessageLoading("Posting comment...");
                             commentTask.execute(commentURL);
-                        }else{
+                        } else {
                             Toast.makeText(ReportDetails.this, "Please fill in comment and try again.", Toast.LENGTH_LONG).show();
                         }
 
