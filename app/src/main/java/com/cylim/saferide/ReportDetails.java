@@ -1,16 +1,20 @@
 package com.cylim.saferide;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.savagelook.android.UrlJsonAsyncTask;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
@@ -103,6 +108,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     }
 
+
     private class GetReportTask extends UrlJsonAsyncTask {
         public GetReportTask(Context context) {
             super(ReportDetails.this);
@@ -123,6 +129,19 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                     bImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            final Dialog dialog = new Dialog(ReportDetails.this);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.image_dialog);
+                            dialog.getWindow().setLayout(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                            ImageView ivReport = (ImageView) dialog.findViewById(R.id.ivIDmain);
+
+                            Picasso.with(context).load(imageURL).into(ivReport);
+
+                            dialog.show();
                         }
                     });
                 }
