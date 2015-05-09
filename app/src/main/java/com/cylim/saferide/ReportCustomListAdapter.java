@@ -29,15 +29,17 @@ public class ReportCustomListAdapter extends ArrayAdapter<String> {
     List<String> reportImage;
     List<String> reportLat;
     List<String> reportLng;
+    List<String> reportAuthor;
 
     public ReportCustomListAdapter(Context context, int resource, List<String> image,
-                                   List<String> lat, List<String> lng) {
+                                   List<String> lat, List<String> lng, List<String> author) {
         super(context, resource, image);
         // TODO Auto-generated constructor stub
         this.context = context;
         this.reportImage = image;
         this.reportLat = lat;
         this.reportLng = lng;
+        this.reportAuthor = author;
     }
 
     @Override
@@ -56,6 +58,7 @@ public class ReportCustomListAdapter extends ArrayAdapter<String> {
             Picasso.with(context).load(reportImage.get(position)).into(ivPicture);
         }
         tvCoordinate.setText("At: " + reportLat.get(position) + ", " + reportLng.get(position));
+        tvAuthor.setText("Reported by: " + reportAuthor.get(position));
 
         return ReportView;
     }

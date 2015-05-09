@@ -73,7 +73,7 @@ public class ReportLists extends Activity {
                 }
                 if (lvReport != null) {
                     ReportCustomListAdapter adapter = new ReportCustomListAdapter(ReportLists.this,
-                            R.layout.custom_report_list_item, reportImage , reportLat, reportLng);
+                            R.layout.custom_report_list_item, reportImage , reportLat, reportLng, reportAuthor);
                     lvReport.setAdapter(adapter);
                 }
             } catch (Exception e) {
