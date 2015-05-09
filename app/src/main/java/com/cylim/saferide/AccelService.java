@@ -17,7 +17,6 @@ import java.util.Calendar;
  */
 public class AccelService extends Service {
 
-
     double lat, lng;
     GPSTagger gps;
     private SensorManager mSensorManager;
@@ -32,13 +31,13 @@ public class AccelService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        gps = new GPSTagger(AccelService.this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         movementDetector = new MovementDetector();
 
         movementDetector.setOnShakeListener(new MovementDetector.OnShakeListener() {
 
             public void onShake() {
+                gps = new GPSTagger(AccelService.this);
 
                 if (gps.canGetLocation()) {
 
@@ -52,7 +51,6 @@ public class AccelService extends Service {
                     String formattedDate = df.format(c.getTime());
                     DatabaseHandler db = new DatabaseHandler(AccelService.this);
                     db.addReport(String.valueOf(lat), String.valueOf(lng), formattedDate);
-
                 } else {
                     gps.showSettingsAlert();
                 }
