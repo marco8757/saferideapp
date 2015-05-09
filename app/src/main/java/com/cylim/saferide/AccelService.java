@@ -21,6 +21,8 @@ public class AccelService extends Service {
     GPSTagger gps;
     private SensorManager mSensorManager;
     private MovementDetector movementDetector;
+    String lastTime = "";
+    double lastLat = 0, lastLng = 0;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -44,13 +46,19 @@ public class AccelService extends Service {
                     lat = gps.getLatitude();
                     lng = gps.getLongitude();
 
-                    Log.d("GPSTagger Location", lat + " " + lng);
-
                     Calendar c = Calendar.getInstance();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = df.format(c.getTime());
-                    DatabaseHandler db = new DatabaseHandler(AccelService.this);
-                    db.addReport(String.valueOf(lat), String.valueOf(lng), formattedDate);
+
+                    if (!formattedDate.equals(lastTime) || (lat == lastLat && lng == lastLng)) {
+                        Log.d("GPSTagger Location", lat + " " + lng);
+                        DatabaseHandler db = new DatabaseHandler(AccelService.this);
+                        db.addReport(String.valueOf(lat), String.valueOf(lng), formattedDate);
+                        lastTime = formattedDate;
+                        Toast.makeText(AccelService.this, String.valueOf(lat) + ", " + String.valueOf(lng), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d("SimilarDefect", "true");
+                    }
                 } else {
                     gps.showSettingsAlert();
                 }
