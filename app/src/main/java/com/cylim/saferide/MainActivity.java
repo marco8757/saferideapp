@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -82,6 +83,7 @@ public class MainActivity extends Activity {
                                 RegisterTask registerTask = new RegisterTask(MainActivity.this);
                                 registerTask.setMessageLoading("Registering new account...");
                                 registerTask.execute(REGISTER_API_ENDPOINT_URL);
+                                d.dismiss();
                             }
                         }
 
@@ -176,6 +178,8 @@ public class MainActivity extends Activity {
                     // the SharedPreferences
                     editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
                     editor.putString("UserID", json.getJSONObject("data").getString("user_id"));
+                    editor.putString("Username", json.getJSONObject("data").getString("username"));
+                    editor.putString("Email", etEmail.getText().toString().trim());
                     editor.commit();
 
                     // launch the HomeActivity and close this one
@@ -257,6 +261,8 @@ public class MainActivity extends Activity {
                     // the SharedPreferences
                     editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
                     editor.putString("UserID", json.getJSONObject("data").getString("user_id"));
+                    editor.putString("Username", rEmail);
+                    editor.putString("Email", rEmail);
                     editor.commit();
 
 //                    // launch the HomeActivity and close this one
