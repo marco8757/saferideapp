@@ -154,6 +154,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 startActivityForResult(newreport, CAMERA_PICTURE);
                 break;
             case R.id.action_profile:
+                Intent profile = new Intent(MapActivity.this, Profile.class);
+                startActivity(profile);
                 break;
             case R.id.action_logout:
                 break;
