@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -50,6 +52,9 @@ public class ReportCustomListAdapter extends ArrayAdapter<String> {
                 .findViewById(R.id.tvCRLcoor);
         ImageView ivPicture = (ImageView) ReportView.findViewById(R.id.ivCRL);
 
+        if (!reportImage.get(position).equals(null)) {
+            Picasso.with(context).load(reportImage.get(position)).into(ivPicture);
+        }
         tvCoordinate.setText("At: " + reportLat.get(position) + ", " + reportLng.get(position));
 
         return ReportView;
