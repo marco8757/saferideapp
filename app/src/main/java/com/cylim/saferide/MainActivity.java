@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +65,8 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View v) {
 
+                        hideKeyboard();
+
                         if (etREmail.getText().toString().length() == 0 || etRPassword.getText().toString().length() == 0 || etRPassword2.getText().toString().length() == 0) {
                             // input fields are empty
                             Toast.makeText(MainActivity.this, "Please complete all the fields",
@@ -99,6 +102,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                hideKeyboard();
+
                 if (etEmail.getText().toString().length() == 0 || etPassword.getText().toString().length() == 0) {
                     // input fields are empty
                     Toast.makeText(MainActivity.this, "Please complete all the fields",
@@ -114,6 +119,11 @@ public class MainActivity extends Activity {
         });
 
 
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
     private class LoginTask extends UrlJsonAsyncTask {
