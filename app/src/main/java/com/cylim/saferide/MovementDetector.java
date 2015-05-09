@@ -12,7 +12,7 @@ public class MovementDetector implements SensorEventListener {
     private SensorManager mSensorManager;
 
     //minimum changes in force, aka, sensitivity
-    private static final int MIN_FORCE = 10;
+    private static final int MIN_FORCE = 6;
 
     //change of direction to consider a shake
     private static final int MIN_DIRECTION_CHANGE = 2;
