@@ -50,12 +50,14 @@ public class AccelService extends Service {
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String formattedDate = df.format(c.getTime());
 
-                    if (!formattedDate.equals(lastTime) || (lat == lastLat && lng == lastLng)) {
+                    //check if previous report time, lat and lng is similar with the newly detected movement
+                    if (!formattedDate.equals(lastTime) && !(lat == lastLat && lng == lastLng)) {
                         Log.d("GPSTagger Location", lat + " " + lng);
+                        lastLat = lat;
+                        lastLng = lng;
+                        lastTime = formattedDate;
                         DatabaseHandler db = new DatabaseHandler(AccelService.this);
                         db.addReport(String.valueOf(lat), String.valueOf(lng), formattedDate);
-                        lastTime = formattedDate;
-                        Toast.makeText(AccelService.this, String.valueOf(lat) + ", " + String.valueOf(lng), Toast.LENGTH_SHORT).show();
                     } else {
                         Log.d("SimilarDefect", "true");
                     }
