@@ -108,4 +108,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + " = '" + id + "'");
         db.close();
     }
+
+    public void cacheAddReport(int id, String lat, String lng, String by, String type) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_CACHE_ID, id);
+        values.put(KEY_CACHE_LAT, lat);
+        values.put(KEY_CACHE_LNG, lng);
+        values.put(KEY_CACHE_BY, by);
+        values.put(KEY_CACHE_TYPE, type);
+        db.insert(TABLE_CACHE, null, values);
+        db.close(); // Closing database connection
+    }
+
+    public String[][] getCachedReports() {
+
+        String selectQuery = "SELECT * FROM " + TABLE_CACHE;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        String[][] array = new String[cursor.getCount()][5];
+        int i = 0;
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(cursor.getColumnIndex(KEY_CACHE_ID));
+            String lat = cursor.getString(cursor.getColumnIndex(KEY_CACHE_LAT));
+            String lng = cursor.getString(cursor.getColumnIndex(KEY_CACHE_LNG));
+            String by = cursor.getString(cursor.getColumnIndex(KEY_CACHE_BY));
+            String type = cursor.getString(cursor.getColumnIndex(KEY_CACHE_TYPE));
+            array[i][0] = id;
+            array[i][1] = lat;
+            array[i][2] = lng;
+            array[i][3] = by;
+            array[i][4] = type;
+            i++;
+        }
+        db.close();
+        return array;
+
+    }
+
+    public void clearCachedReport() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_CACHE );
+        db.close();
+    }
 }
