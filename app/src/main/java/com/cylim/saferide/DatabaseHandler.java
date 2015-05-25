@@ -20,6 +20,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_LNG = "lng";
     private static final String KEY_TIME = "time";
 
+    //secondary database for local cache to improve quality
+    private static final String TABLE_CACHE = "tb_cache";
+    private static final String KEY_CACHE_ID = "id";
+    private static final String KEY_CACHE_LAT = "lat";
+    private static final String KEY_CACHE_LNG = "lng";
+    private static final String KEY_CACHE_BY = "by";
+    private static final String KEY_CACHE_TYPE = "type";
+
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +43,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             db.execSQL(CREATE_TABLE_REPORT);
 
+            String CREATE_TABLE_CACHE = "CREATE TABLE " + TABLE_CACHE + "(" + KEY_CACHE_ID
+                    + " INTEGER PRIMARY KEY, " + KEY_CACHE_LAT + " TEXT,"
+                    + KEY_CACHE_LNG + " TEXT," + KEY_CACHE_BY + " TEXT,"
+                    + KEY_CACHE_TYPE + " TEXT)";
+
+            db.execSQL(CREATE_TABLE_CACHE);
+
+            Log.d("SQL", "Creation Completed.");
+
         } catch (Exception e) {
             Log.d("CREATION ERROR", e.toString());
         }
@@ -43,9 +60,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REPORT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CACHE);
         onCreate(db);
     }
-
 
     public void addReport(String lat, String lng, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
