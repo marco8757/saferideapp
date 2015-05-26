@@ -121,6 +121,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public int getLastCachedReport() {
+
+
+        String selectQuery = "SELECT * FROM " + TABLE_CACHE + " ORDER BY " + KEY_CACHE_ID + " DESC LIMIT 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int result = 0;
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            result = cursor.getInt(0);
+        }
+        db.close();
+        Log.d("LastCachedReport", String.valueOf(result));
+        return result;
+    }
+
     public String[][] getCachedReports() {
 
         String selectQuery = "SELECT * FROM " + TABLE_CACHE;
@@ -149,7 +165,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void clearCachedReport() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_CACHE );
+        db.execSQL("DELETE FROM " + TABLE_CACHE);
         db.close();
     }
 }
