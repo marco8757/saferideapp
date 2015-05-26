@@ -25,7 +25,8 @@ public class Splash extends Activity {
         setContentView(R.layout.splash);
 
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
-
+        Intent cache = new Intent(Splash.this, BackgroundCacheService.class);
+        startService(cache);
 
         Thread timer = new Thread() {
             public void run() {
