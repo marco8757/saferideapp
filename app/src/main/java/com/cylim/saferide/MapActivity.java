@@ -1,12 +1,10 @@
 package com.cylim.saferide;
 
-import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,9 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,7 +24,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -161,8 +158,32 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 startActivity(viewreport);
                 break;
             case R.id.action_new_report:
-                Intent newreport = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(newreport, CAMERA_PICTURE);
+
+                final Dialog dialog = new Dialog(MapActivity.this);
+                dialog.setContentView(R.layout.custom_alert_dialog);
+                dialog.setTitle("Reporting Methods");
+
+                Button bAuto = (Button) dialog.findViewById(R.id.bCADAuto);
+                Button bCamera = (Button) dialog.findViewById(R.id.bCADPicture);
+                // if button is clicked, close the custom dialog
+                bAuto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent ser = new Intent(MapActivity.this, AccelService.class);
+                        startService(ser);
+                        dialog.dismiss();
+                    }
+                });
+                bCamera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent newreport = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(newreport, CAMERA_PICTURE);
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
                 break;
             case R.id.action_profile:
                 Intent profile = new Intent(MapActivity.this, Profile.class);
@@ -174,6 +195,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
