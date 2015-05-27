@@ -1,11 +1,14 @@
 package com.cylim.saferide;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -49,7 +53,7 @@ import java.util.List;
 /**
  * Created by marco on 12/4/15.
  */
-public class MapActivity extends ActionBarActivity implements OnMapReadyCallback {
+public class MapActivity extends ActionBarActivity implements OnMapReadyCallback, OnMapLoadedCallback {
 
     private static final int CAMERA_PICTURE = 1337;
     private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/reports.json";
@@ -61,6 +65,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     GoogleMap gm;
     private SharedPreferences mPreferences;
     private String userID;
+    private ProgressDialog pDialog;
 
     public static String encodeTobBase64(Bitmap image) {
 
@@ -85,19 +90,25 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
         userID = mPreferences.getString("UserID", "");
-        GetReportTask getReport = new GetReportTask(MapActivity.this);
-        getReport.setMessageLoading("Loading reports...");
-        getReport.execute(REPORTS_URL);
+//        GetReportTask getReport = new GetReportTask(MapActivity.this);
+//        getReport.setMessageLoading("Loading reports...");
+//        getReport.execute(REPORTS_URL);
+        pDialog = ProgressDialog.show(MapActivity.this,"","Setting up map...", true, false);
+
+        LoadCachedReports loadCachedReports = new LoadCachedReports();
+        loadCachedReports.execute();
     }
 
     private void setupMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapM);
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("MapReady", "true");
         double lat = 0, lng = 0;
         GPSTagger gpsTagger = new GPSTagger(MapActivity.this);
         gm = googleMap;
@@ -116,6 +127,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 13));
+        googleMap.setOnMapLoadedCallback(this);
 
         for (int i = 0; i < list_lat.size(); i++) {
             if (list_category.get(i).equals("Camera")) {
@@ -130,7 +142,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             /// add if else for lists
             ///later can add title, snippet for more information
         }
-
     }
 
     @Override
@@ -195,6 +206,12 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         }
 
+    }
+
+    @Override
+    public void onMapLoaded() {
+        Log.d("MapLoaded", "true");
+        pDialog.dismiss();
     }
 
     private class NewReport extends UrlJsonAsyncTask {
@@ -302,6 +319,62 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 super.onPostExecute(json);
                 setupMap();
             }
+        }
+    }
+
+    private class LoadCachedReports extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+        Context context;
+
+        String result[][];
+        List<String> reportLat;
+        List<String> reportLng;
+        List<String> reportBy;
+        List<String> reportType;
+
+        @Override
+        protected void onPreExecute() {
+            try {
+                progressDialog = ProgressDialog.show(MapActivity.this, "", "Loading Reports...", true, false);
+            } catch (Exception e) {
+                Log.e("ProgressDialog", e.toString());
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            DatabaseHandler db = new DatabaseHandler(MapActivity.this);
+            result = db.getCachedReports();
+            reportLat = new ArrayList<String>(result.length);
+            reportLng = new ArrayList<String>(result.length);
+            reportBy = new ArrayList<String>(result.length);
+            reportType = new ArrayList<String>(result.length);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            for (int i = 0; i < result.length; i++) {
+                reportLat.add(i, result[i][1]);
+                reportLng.add(i, result[i][2]);
+                reportBy.add(i, result[i][3]);
+                reportType.add(i, result[i][4]);
+            }
+
+            list_lat = new ArrayList<String>(reportLat);
+            list_lng = new ArrayList<String>(reportLng);
+            list_by = new ArrayList<String>(reportBy);
+            list_category = new ArrayList<String>(reportType);
+
+            setupMap();
+
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+
+
         }
     }
 }
