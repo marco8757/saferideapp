@@ -52,13 +52,7 @@
             android:name=".MainActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Dashboard"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".ReportLists"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".NewReport"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Profile"
