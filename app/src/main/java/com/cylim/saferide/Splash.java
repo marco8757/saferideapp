@@ -35,11 +35,11 @@ public class Splash extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    String token = mPreferences.getString("AuthToken","");
-                    Intent i = new Intent(Splash.this,MainActivity.class);
+                    String token = mPreferences.getString("AuthToken", "");
+                    Intent i = new Intent(Splash.this, MainActivity.class);
 
-                    if (token.length() > 0 ){
-                       i = new Intent(Splash.this,MapActivity.class);
+                    if (token.length() > 0) {
+                        i = new Intent(Splash.this, MapActivity.class);
                     }
 
                     startActivity(i);

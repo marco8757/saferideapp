@@ -7,7 +7,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -13,14 +12,14 @@ import java.util.List;
 /**
  * Created by marco on 18/4/15.
  */
-public class CommentCustomListAdapter  extends ArrayAdapter<String> {
+public class CommentCustomListAdapter extends ArrayAdapter<String> {
 
     Context context;
     List<String> commentContent;
     List<String> commentAuthor;
 
     public CommentCustomListAdapter(Context context, int resource, List<String> comment,
-                                   List<String> author) {
+                                    List<String> author) {
         super(context, resource, comment);
         // TODO Auto-generated constructor stub
         this.context = context;
