@@ -53,8 +53,8 @@ import java.util.List;
  */
 public class MapActivity extends ActionBarActivity implements OnMapReadyCallback, OnMapLoadedCallback {
 
+    //setup camera response code
     private static final int CAMERA_PICTURE = 1337;
-    private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/reports.json";
     private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
     Bitmap thumbnail;
     List<String> list_lat, list_lng, list_by, list_category;
@@ -65,6 +65,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     private String userID;
     private ProgressDialog pDialog;
 
+    //convert bitmap images into base64 code
     public static String encodeTobBase64(Bitmap image) {
 
         if (image == null)
@@ -72,6 +73,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         Bitmap bm = image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //compress image into JPEG with quality of 100 into baos
         bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
         byte[] b = baos.toByteArray();
@@ -86,17 +88,19 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
 
+        //retrieval of userID from sharedpreferences
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
         userID = mPreferences.getString("UserID", "");
-//        GetReportTask getReport = new GetReportTask(MapActivity.this);
-//        getReport.setMessageLoading("Loading reports...");
-//        getReport.execute(REPORTS_URL);
+
+        //setup progress dialog
         pDialog = ProgressDialog.show(MapActivity.this, "", "Setting up map...", true, false);
 
+        //load cache from local database to avoid lag
         LoadCachedReports loadCachedReports = new LoadCachedReports();
         loadCachedReports.execute();
     }
 
+    //setup map fragment and get async map in mapactivity context
     private void setupMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapM);
@@ -108,6 +112,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         Log.d("MapReady", "true");
         double lat = 0, lng = 0;
+
+        //retrieve user's coordinate to zoom into this location on map
         GPSTagger gpsTagger = new GPSTagger(MapActivity.this);
         gm = googleMap;
         if (gpsTagger.canGetLocation()) {
@@ -124,9 +130,11 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         LatLng mylocation = new LatLng(lat, lng);
 
         googleMap.setMyLocationEnabled(true);
+        //zoom into user's location with zoom level of 13/18
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylocation, 13));
         googleMap.setOnMapLoadedCallback(this);
 
+        //setup markers and circles on map
         for (int i = 0; i < list_lat.size(); i++) {
             if (list_category.get(i).equals("Camera")) {
                 gm.addMarker(new MarkerOptions()
@@ -137,8 +145,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
                 Circle circle = gm.addCircle(cOption);
             }
-            /// add if else for lists
-            ///later can add title, snippet for more information
         }
     }
 
@@ -160,13 +166,13 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 break;
             case R.id.action_new_report:
 
+                //setup custom dialog for report method selection
                 final Dialog dialog = new Dialog(MapActivity.this);
                 dialog.setContentView(R.layout.custom_alert_dialog);
                 dialog.setTitle("Reporting Methods");
 
                 Button bAuto = (Button) dialog.findViewById(R.id.bCADAuto);
                 Button bCamera = (Button) dialog.findViewById(R.id.bCADPicture);
-                // if button is clicked, close the custom dialog
                 bAuto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -197,13 +203,15 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         return super.onOptionsItemSelected(item);
     }
 
+    //setup notification
     public void Notification() {
-
+        //setup intent and pending intent to stop AccelService later
         Intent ser = new Intent(MapActivity.this, StopAccelService.class);
 
         PendingIntent pIntent = PendingIntent.getService(this, 0, ser,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        //setup notification with details and intent
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.logo)
                         //ticker message when notification first come up
@@ -218,6 +226,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 .setContentIntent(pIntent)
                 .setAutoCancel(true);
 
+        //display notification that is set up
         NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationmanager.notify(0, builder.build());
 
@@ -226,8 +235,10 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //when camera return with result
         if (requestCode == CAMERA_PICTURE) {
             try {
+                //retrieve data and save into thumbnail
                 thumbnail = (Bitmap) data.getExtras().get("data");
                 Log.d("ImageRaw", data.getExtras().get("data").toString());
                 gps = new GPSTagger(MapActivity.this);
@@ -239,6 +250,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
                     Log.d("GPSTagger Location", lat + " " + lng);
 
+                    //execute upload of image
                     NewReport nr = new NewReport(MapActivity.this);
                     nr.setMessageLoading("Uploading picture...");
                     nr.execute(reportURL);
@@ -260,6 +272,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
     @Override
     public void onMapLoaded() {
         Log.d("MapLoaded", "true");
+        //dismiss progress dialog that shows loading map when map is loaded.
         pDialog.dismiss();
     }
 
@@ -282,6 +295,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                     json.put("success", false);
                     json.put("info", "Something went wrong. Retry!");
 
+                    //get current timestamp
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ");
                     String currentTimeStamp = dateFormat.format(new Date());
 
@@ -294,7 +308,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                     StringEntity se = new StringEntity(holder.toString());
                     post.setEntity(se);
 
-                    // setup the request headers
+                    //setup the request headers
                     post.setHeader("Accept", "application/json");
                     post.setHeader("Content-Type", "application/json");
 
@@ -332,45 +346,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         }
     }
 
-    private class GetReportTask extends UrlJsonAsyncTask {
-        public GetReportTask(Context context) {
-            super(MapActivity.this);
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject json) {
-            try {
-                JSONArray jsonReports = json.getJSONObject("data").getJSONArray("reports");
-                int length = jsonReports.length();
-                List<String> reportID = new ArrayList<String>(length);
-                List<String> reportLat = new ArrayList<String>(length);
-                List<String> reportLng = new ArrayList<String>(length);
-                List<String> reportBy = new ArrayList<String>(length);
-                List<String> reportType = new ArrayList<String>(length);
-
-
-                for (int i = 0; i < length; i++) {
-                    reportID.add(jsonReports.getJSONObject(i).getString("id"));
-                    reportLat.add(jsonReports.getJSONObject(i).getString("defects_lat"));
-                    reportLng.add(jsonReports.getJSONObject(i).getString("defects_lng"));
-                    reportBy.add(jsonReports.getJSONObject(i).getString("name"));
-                    reportType.add(jsonReports.getJSONObject(i).getString("cat"));
-                }
-                list_lat = new ArrayList<String>(reportLat);
-                list_lng = new ArrayList<String>(reportLng);
-                list_by = new ArrayList<String>(reportBy);
-                list_category = new ArrayList<String>(reportType);
-
-            } catch (Exception e) {
-                Toast.makeText(context, e.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            } finally {
-                super.onPostExecute(json);
-                setupMap();
-            }
-        }
-    }
-
     private class LoadCachedReports extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
         Context context;
@@ -384,6 +359,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         @Override
         protected void onPreExecute() {
             try {
+                //display progress dialog
                 progressDialog = ProgressDialog.show(MapActivity.this, "", "Loading Reports...", true, false);
             } catch (Exception e) {
                 Log.e("ProgressDialog", e.toString());
@@ -392,6 +368,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         @Override
         protected String doInBackground(String... params) {
+            //retrieve data from local database
             DatabaseHandler db = new DatabaseHandler(MapActivity.this);
             result = db.getCachedReports();
             reportLat = new ArrayList<String>(result.length);

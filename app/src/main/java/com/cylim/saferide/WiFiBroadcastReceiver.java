@@ -13,9 +13,11 @@ import android.util.Log;
 public class WiFiBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+
         ConnectivityManager connMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
+        //check if wifi is connected
         final boolean isWifiConn = networkInfo.isConnected();
         Log.d("WiFi connected", String.valueOf(isWifiConn));
 

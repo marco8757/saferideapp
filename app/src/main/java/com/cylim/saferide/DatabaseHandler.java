@@ -35,6 +35,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        //create table when first launched
         try {
             String CREATE_TABLE_REPORT = "CREATE TABLE " + TABLE_REPORT + "("
                     + KEY_ID + " INTEGER PRIMARY KEY, " + KEY_LAT
@@ -122,8 +124,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public int getLastCachedReport() {
-
-
         String selectQuery = "SELECT * FROM " + TABLE_CACHE + " ORDER BY " + KEY_CACHE_ID + " DESC LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -138,7 +138,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public String[][] getCachedReports() {
-
         String selectQuery = "SELECT * FROM " + TABLE_CACHE;
 
         SQLiteDatabase db = this.getReadableDatabase();

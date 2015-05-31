@@ -47,9 +47,11 @@ public class UploadService extends Service {
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
         userID = mPreferences.getString("UserID","");
 
+        //retrieve data from lacal database
         DatabaseHandler db = new DatabaseHandler(UploadService.this);
         String[][] reports = db.getReports();
 
+        //upload data onto server
         for (int i = 0; i < reports.length; i++) {
             NewReport nr = new NewReport(UploadService.this, Double.parseDouble(reports[i][1]), Double.parseDouble(reports[i][2]),
                     Integer.parseInt(reports[i][0]), reports[i][3]);
@@ -121,6 +123,7 @@ public class UploadService extends Service {
         protected void onPostExecute(JSONObject json) {
             try {
                 if (json.getBoolean("success")) {
+                    //remove local data once it is successfully uploaded to server
                     DatabaseHandler db = new DatabaseHandler(UploadService.this);
                     db.deleteReport(String.valueOf(id));
                     Log.d("RemovedReport", "Report " + id +" is removed from local database.");

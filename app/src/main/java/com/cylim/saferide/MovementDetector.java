@@ -46,17 +46,17 @@ public class MovementDetector implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent se) {
-        // get data from sensor manager
+        //get data from sensor manager
         float x = se.values[SensorManager.DATA_X];
         float y = se.values[SensorManager.DATA_Y];
         float z = se.values[SensorManager.DATA_Z];
 
-        // calculate movement
+        //calculate movement
         float totalMovement = Math.abs(x + y + z - lastX - lastY - lastZ);
 
         if (totalMovement > MIN_FORCE) {
 
-            // get current timestamp
+            //get current timestamp
             long now = System.currentTimeMillis();
 
             //store first movement time

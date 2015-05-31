@@ -18,6 +18,7 @@ public class StopAccelService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        //stop AccelService and dismiss notification
         Intent svc = new Intent(StopAccelService.this, AccelService.class);
         stopService(svc);
         NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

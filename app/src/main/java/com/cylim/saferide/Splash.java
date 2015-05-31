@@ -31,10 +31,12 @@ public class Splash extends Activity {
         Thread timer = new Thread() {
             public void run() {
                 try {
+                    //pause for 1000 milisecond
                     sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
+                    //check if user has logged in with authtoken
                     String token = mPreferences.getString("AuthToken", "");
                     Intent i = new Intent(Splash.this, MainActivity.class);
 

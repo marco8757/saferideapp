@@ -20,25 +20,24 @@ public class GPSTagger extends Service implements LocationListener {
 
     private final Context mContext;
 
-    // flag for GPS status
+    //GPS status
     boolean isGPSEnabled = false;
 
-    // flag for network status
+    //network status
     boolean isNetworkEnabled = false;
 
     boolean canGetLocation = false;
 
-    Location location; // location
-    double latitude; // latitude
-    double longitude; // longitude
+    Location location;
+    double latitude;
+    double longitude;
 
-    // The minimum distance to change Updates in meters
+    //minimum distance to change updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
-    // The minimum time between updates in milliseconds
+    //minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1000; // 1 second
 
-    // Declaring a Location Manager
     protected LocationManager locationManager;
 
     public GPSTagger(Context context) {

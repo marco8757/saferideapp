@@ -39,49 +39,59 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setup view from activity main layout
         setContentView(R.layout.activity_main);
+
+        //setup items on view
         bLogin = (Button) findViewById(R.id.bMLogin);
         bRegister = (Button) findViewById(R.id.bMRegister);
         etEmail = (EditText) findViewById(R.id.etMEmail);
         etPassword = (EditText) findViewById(R.id.etMPassword);
 
+        //retrieval of sharedpreferences with CurrentUser tag
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
 
 
+        //setup onclick listener for register button
         bRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //initiation of dialog for registration
                 final Dialog d = new Dialog(MainActivity.this);
                 d.setContentView(R.layout.registration);
                 d.setTitle("Registration");
 
+                //setup items on dialog view
                 final EditText etREmail = (EditText) d.findViewById(R.id.etREmail);
                 final EditText etRPassword = (EditText) d.findViewById(R.id.etRPassword);
                 final EditText etRPassword2 = (EditText) d.findViewById(R.id.etRPassword2);
                 final Button bRSubmit = (Button) d.findViewById(R.id.bRRegister);
 
+                //setup onclick listener for submit button
                 bRSubmit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         hideKeyboard();
 
+                        //perform validation
                         if (etREmail.getText().toString().length() == 0 || etRPassword.getText().toString().length() == 0 || etRPassword2.getText().toString().length() == 0) {
-                            // input fields are empty
+                            //when input fields are empty, display a toast
                             Toast.makeText(MainActivity.this, "Please complete all the fields",
                                     Toast.LENGTH_LONG).show();
                             return;
                         } else {
                             if (!etRPassword.getText().toString().equals(etRPassword2.getText().toString())) {
-                                // password doesn't match confirmation
+                                //when password doesnt match confirmation
                                 Toast.makeText(MainActivity.this, "Password Mismatch",
                                         Toast.LENGTH_LONG).show();
                                 return;
                             } else {
+                                //when all validation passed
                                 rEmail = etREmail.getText().toString();
                                 rPassword = etRPassword.getText().toString();
                                 rPassword2 = etRPassword2.getText().toString();
-                                // everything is ok!
+                                //execute register async task
                                 RegisterTask registerTask = new RegisterTask(MainActivity.this);
                                 registerTask.setMessageLoading("Registering new account...");
                                 registerTask.execute(REGISTER_API_ENDPOINT_URL);
@@ -91,25 +101,27 @@ public class MainActivity extends Activity {
 
                     }
                 });
-
+                //display dialog for registration
                 d.show();
 
             }
         });
-
+        //setup onclick listener for login button
         bLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 hideKeyboard();
 
+                //setup validation
                 if (etEmail.getText().toString().length() == 0 || etPassword.getText().toString().length() == 0) {
-                    // input fields are empty
+                    //when input fields are empty, display a toast
                     Toast.makeText(MainActivity.this, "Please complete all the fields",
                             Toast.LENGTH_LONG).show();
                     return;
 
                 } else {
+                    //when all validation passed, execute login async task
                     LoginTask loginTask = new LoginTask(MainActivity.this);
                     loginTask.setMessageLoading("Logging in...");
                     loginTask.execute(LOGIN_API_ENDPOINT_URL);
@@ -121,6 +133,7 @@ public class MainActivity extends Activity {
     }
 
     private void hideKeyboard() {
+        //hide keyboard from the view to minimize distraction while executing async task
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
@@ -132,6 +145,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected JSONObject doInBackground(String... urls) {
+            //setup http post with json object to be passed
             DefaultHttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(urls[0]);
             JSONObject holder = new JSONObject();
@@ -141,19 +155,18 @@ public class MainActivity extends Activity {
 
             try {
                 try {
-                    // setup the returned values in case
-                    // something goes wrong
+                    //setup failure value for tags
                     json.put("success", false);
                     json.put("info", "Something went wrong. Retry!");
-                    // add the user email and password to
-                    // the params
+                    //get param from global variables
                     userObj.put("email", etEmail.getText().toString());
                     userObj.put("password", etPassword.getText().toString());
                     holder.put("user", userObj);
                     StringEntity se = new StringEntity(holder.toString());
+                    //post with param
                     post.setEntity(se);
 
-                    // setup the request headers
+                    //setup the request headers
                     post.setHeader("Accept", "application/json");
                     post.setHeader("Content-Type", "application/json");
 
@@ -180,26 +193,24 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(JSONObject json) {
             try {
+                //if server response success
                 if (json.getBoolean("success")) {
-                    // everything is ok
+                    //setup sharedpreferences editor
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    // save the returned auth_token into
-                    // the SharedPreferences
+                    //save the returned auth_token and other parameters
                     editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
                     editor.putString("UserID", json.getJSONObject("data").getString("user_id"));
                     editor.putString("Username", json.getJSONObject("data").getString("username"));
                     editor.putString("Email", etEmail.getText().toString().trim());
                     editor.commit();
 
-                    // launch the HomeActivity and close this one
+                    //launch the map activity and close this one
                     Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                     startActivity(intent);
                     finish();
                 }
                 Toast.makeText(MainActivity.this, json.getString("info"), Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                // something went wrong: show a Toast
-                // with the exception message
                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
             } finally {
                 super.onPostExecute(json);
@@ -215,6 +226,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected JSONObject doInBackground(String... urls) {
+            //setup http post with json object to be passed
             DefaultHttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost(urls[0]);
             JSONObject holder = new JSONObject();
@@ -224,12 +236,11 @@ public class MainActivity extends Activity {
 
             try {
                 try {
-                    // setup the returned values in case
-                    // something goes wrong
+                    //setup failure value for tags
                     json.put("success", false);
                     json.put("info", "Something went wrong. Retry!");
 
-                    // add the users's info to the post params
+                    //get param from global variables
                     userObj.put("email", rEmail);
                     userObj.put("password", rPassword);
                     userObj.put("password_confirmation", rPassword2);
@@ -237,7 +248,7 @@ public class MainActivity extends Activity {
                     StringEntity se = new StringEntity(holder.toString());
                     post.setEntity(se);
 
-                    // setup the request headers
+                    //setup the request headers
                     post.setHeader("Accept", "application/json");
                     post.setHeader("Content-Type", "application/json");
 
@@ -264,25 +275,17 @@ public class MainActivity extends Activity {
         protected void onPostExecute(JSONObject json) {
             try {
                 if (json.getBoolean("success")) {
-                    // everything is ok
+                    //if server response success
                     SharedPreferences.Editor editor = mPreferences.edit();
-                    // save the returned auth_token into
-                    // the SharedPreferences
+                    //save the returned auth_token other parameters into sharedpreferences
                     editor.putString("AuthToken", json.getJSONObject("data").getString("auth_token"));
                     editor.putString("UserID", json.getJSONObject("data").getString("user_id"));
                     editor.putString("Username", rEmail);
                     editor.putString("Email", rEmail);
                     editor.commit();
-
-//                    // launch the HomeActivity and close this one
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    startActivity(intent);
-//                    finish();
                 }
                 Toast.makeText(context, json.getString("info"), Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-                // something went wrong: show a Toast
-                // with the exception message
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             } finally {
                 super.onPostExecute(json);

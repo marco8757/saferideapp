@@ -61,6 +61,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.report_details);
+
         rb = (RatingBar) findViewById(R.id.rbRRating);
         bPost = (Button) findViewById(R.id.bRPost);
         bImage = (Button) findViewById(R.id.bRViewImage);
@@ -72,6 +73,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
         mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
         userID = mPreferences.getString("UserID", "");
 
+        //get url from previous activity for information retrieval
         Bundle b = getIntent().getExtras();
         URL = b.getString("ReportURL");
         tvAuthor.setText("Reported by: " + b.getString("Name"));
@@ -89,6 +91,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         LatLng defect = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
 
+        //setup map property
         googleMap.setMyLocationEnabled(true);
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defect, 13));
         googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -219,8 +222,6 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
 
             try {
                 try {
-                    // setup the returned values in case
-                    // something goes wrong
                     json.put("success", false);
                     json.put("info", "Something went wrong. Retry!");
 
@@ -231,7 +232,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                     StringEntity se = new StringEntity(holder.toString());
                     post.setEntity(se);
 
-                    // setup the request headers
+                    //setup the request headers
                     post.setHeader("Accept", "application/json");
                     post.setHeader("Content-Type", "application/json");
 
@@ -262,8 +263,6 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                 }
 
             } catch (Exception e) {
-                // something went wrong: show a Toast
-                // with the exception message
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             } finally {
                 super.onPostExecute(json);
@@ -287,8 +286,6 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
 
             try {
                 try {
-                    // setup the returned values in case
-                    // something goes wrong
                     json.put("success", false);
                     json.put("info", "Something went wrong. Retry!");
 
@@ -299,7 +296,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                     StringEntity se = new StringEntity(holder.toString());
                     post.setEntity(se);
 
-                    // setup the request headers
+                    //setup the request headers
                     post.setHeader("Accept", "application/json");
                     post.setHeader("Content-Type", "application/json");
 
@@ -330,8 +327,6 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                 }
 
             } catch (Exception e) {
-                // something went wrong: show a Toast
-                // with the exception message
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             } finally {
                 super.onPostExecute(json);

@@ -59,9 +59,11 @@ public class Profile extends Activity {
         tvName.setText(mPreferences.getString("Username", ""));
         tvEmail.setText(mPreferences.getString("Email", ""));
 
+        //convert email into md5hash
         emailHash = md5Hash(mPreferences.getString("Email", "").trim());
 
         if (!emailHash.contains("null")) {
+            //retrieve user's image from Gravatar using Picasso library
             Picasso.with(Profile.this).load("http://www.gravatar.com/avatar/" + emailHash + "?s=200").into(ivProfilePicture);
         }
 
@@ -101,6 +103,7 @@ public class Profile extends Activity {
 
     }
 
+    //convert email into md5hash
     private String md5Hash(String email) {
         String result = "null";
         MessageDigest md = null;
@@ -120,6 +123,7 @@ public class Profile extends Activity {
         return result;
     }
 
+    //trigger views visibilities
     private void editModeOff() {
         editMode = false;
         bUpdate.setText("Update Profile");
@@ -156,7 +160,7 @@ public class Profile extends Activity {
                     StringEntity se = new StringEntity(holder.toString());
                     post.setEntity(se);
 
-                    // setup the request headers
+                    //setup the request headers
                     post.setHeader("Accept", "application/json");
                     post.setHeader("Content-Type", "application/json");
 
