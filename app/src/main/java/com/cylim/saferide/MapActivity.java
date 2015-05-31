@@ -1,6 +1,8 @@
 package com.cylim.saferide;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -90,7 +93,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 //        GetReportTask getReport = new GetReportTask(MapActivity.this);
 //        getReport.setMessageLoading("Loading reports...");
 //        getReport.execute(REPORTS_URL);
-        pDialog = ProgressDialog.show(MapActivity.this,"","Setting up map...", true, false);
+        pDialog = ProgressDialog.show(MapActivity.this, "", "Setting up map...", true, false);
 
         LoadCachedReports loadCachedReports = new LoadCachedReports();
         loadCachedReports.execute();
@@ -171,6 +174,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                     public void onClick(View v) {
                         Intent ser = new Intent(MapActivity.this, AccelService.class);
                         startService(ser);
+                        Notification();
                         dialog.dismiss();
                     }
                 });
@@ -182,7 +186,6 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                         dialog.dismiss();
                     }
                 });
-
                 dialog.show();
                 break;
             case R.id.action_profile:
@@ -196,6 +199,31 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         return super.onOptionsItemSelected(item);
     }
 
+    public void Notification() {
+
+        Intent ser = new Intent(MapActivity.this, StopAccelService.class);
+
+        PendingIntent pIntent = PendingIntent.getService(this, 0, ser,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.logo)
+                        //ticker message when notification first come up
+                .setTicker("SafeRide is up, drive safe!")
+                        //title of notification
+                .setContentTitle("SafeRide")
+                        //secondary text of notification
+                .setContentText("Drive safe!")
+                        //add actionbutton into notification
+                .addAction(R.mipmap.logo, "Stop Driving.", pIntent)
+                        //set pending intent into notification
+                .setContentIntent(pIntent)
+                .setAutoCancel(true);
+
+        NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationmanager.notify(0, builder.build());
+
+    }
 
 
     @Override
