@@ -29,11 +29,12 @@ public class ReportLists extends Activity {
 
     List<String> reportURL;
     List<String> reportAuthor;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.report_lists);
-        lvReport = (ListView) findViewById (R.id.lvRList);
+        lvReport = (ListView) findViewById(R.id.lvRList);
         loadReportsFromServer(REPORTS_URL);
     }
 
@@ -57,6 +58,7 @@ public class ReportLists extends Activity {
                 List<String> reportLat = new ArrayList<String>(length);
                 List<String> reportLng = new ArrayList<String>(length);
                 List<String> reportImage = new ArrayList<String>(length);
+                List<String> reportAddress = new ArrayList<String>(length);
                 reportAuthor = new ArrayList<String>(length);
                 reportURL = new ArrayList<String>(length);
 
@@ -68,12 +70,13 @@ public class ReportLists extends Activity {
                     reportAuthor.add(jsonReports.getJSONObject(i).getString("name"));
                     reportURL.add(jsonReports.getJSONObject(i).getString("url"));
                     reportImage.add(jsonReports.getJSONObject(i).getString("picture_url"));
+                    reportAddress.add(jsonReports.getJSONObject(i).getString("address"));
 
 
                 }
                 if (lvReport != null) {
                     ReportCustomListAdapter adapter = new ReportCustomListAdapter(ReportLists.this,
-                            R.layout.custom_report_list_item, reportImage , reportLat, reportLng, reportAuthor);
+                            R.layout.custom_report_list_item, reportImage, reportLat, reportLng, reportAddress, reportAuthor);
                     lvReport.setAdapter(adapter);
                 }
             } catch (Exception e) {
@@ -83,12 +86,11 @@ public class ReportLists extends Activity {
                 super.onPostExecute(json);
 
 
-
                 lvReport.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        Intent i = new Intent(ReportLists.this,ReportDetails.class);
+                        Intent i = new Intent(ReportLists.this, ReportDetails.class);
                         i.putExtra("Name", reportAuthor.get((int) id));
                         i.putExtra("ReportURL", reportURL.get((int) id));
                         startActivity(i);
