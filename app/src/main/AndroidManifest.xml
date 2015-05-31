@@ -34,6 +34,10 @@
             android:enabled="true">
         </service>
         <service
+            android:name=".StopAccelService"
+            android:enabled="true">
+        </service>
+        <service
             android:name=".UploadService"
             android:enabled="true">
         </service>
