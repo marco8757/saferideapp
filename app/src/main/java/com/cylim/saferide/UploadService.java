@@ -29,7 +29,7 @@ public class UploadService extends Service {
     private SharedPreferences mPreferences;
     String userID;
 
-    private final static String ACCEL_UPLOAD_ENDPOINT = "http://saferidebymarco.herokuapp.com/api/v1/accelreport.json";
+    private final static String ACCEL_UPLOAD_ENDPOINT = "http://mysaferide.herokuapp.com/api/v1/accelreport.json";
     @Override
     public IBinder onBind(Intent intent) {
         return null;

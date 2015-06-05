@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ReportLists extends Activity {
 
-    private static final String REPORTS_URL = "http://saferidebymarco.herokuapp.com/api/v1/cameraupload.json";
+    private static final String REPORTS_URL = "http://mysaferide.herokuapp.com/api/v1/cameraupload.json";
     ListView lvReport;
 
     List<String> reportURL;

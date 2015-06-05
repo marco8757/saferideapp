@@ -55,7 +55,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
     //setup camera response code
     private static final int CAMERA_PICTURE = 1337;
-    private final String reportURL = "http://saferidebymarco.herokuapp.com/api/v1/reports.json";
+    private final String reportURL = "http://mysaferide.herokuapp.com/api/v1/reports.json";
     Bitmap thumbnail;
     List<String> list_lat, list_lng, list_by, list_category;
     GPSTagger gps;
@@ -197,6 +197,8 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 startActivity(profile);
                 break;
             case R.id.action_logout:
+                Intent i = new Intent(MapActivity.this, UploadService.class);
+                startService(i);
                 break;
         }
 

@@ -39,7 +39,7 @@ public class Profile extends Activity {
     ImageView ivProfilePicture;
     Boolean editMode = false;
     private SharedPreferences mPreferences;
-    private final static String PROFILE_ENDPOINT = "http://saferidebymarco.herokuapp.com/api/v1/update_profile.json";
+    private final static String PROFILE_ENDPOINT = "http://mysaferide.herokuapp.com/api/v1/update_profile.json";
     String emailHash;
 
     @Override

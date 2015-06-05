@@ -20,7 +20,7 @@ import java.util.List;
 public class BackgroundCacheService extends Service {
 
     List<String> list_id, list_lat, list_lng, list_by, list_category;
-    private static final String CACHE_END_POINT_URL = "http://saferidebymarco.herokuapp.com/api/v1/cache_reports/";
+    private static final String CACHE_END_POINT_URL = "http://mysaferide.herokuapp.com/api/v1/cache_reports/";
     int lastCached = 0;
 
     @Override

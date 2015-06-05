@@ -45,8 +45,8 @@ import java.util.List;
  */
 public class ReportDetails extends Activity implements OnMapReadyCallback {
 
-    private final String ratingURL = "http://saferidebymarco.herokuapp.com/api/v1/rate.json";
-    private final String commentURL = "http://saferidebymarco.herokuapp.com/api/v1/comment.json";
+    private final String ratingURL = "http://mysaferide.herokuapp.com/api/v1/rate.json";
+    private final String commentURL = "http://mysaferide.herokuapp.com/api/v1/comment.json";
     RatingBar rb;
     Button bPost, bImage;
     EditText etComment;
