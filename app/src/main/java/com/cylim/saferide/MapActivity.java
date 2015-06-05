@@ -197,8 +197,11 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 startActivity(profile);
                 break;
             case R.id.action_logout:
-                Intent i = new Intent(MapActivity.this, UploadService.class);
-                startService(i);
+                mPreferences.edit().clear().commit();
+                finish();
+                Toast.makeText(MapActivity.this, "Successfully logged out.", Toast.LENGTH_LONG).show();
+                Intent login = new Intent(MapActivity.this, MainActivity.class);
+                startActivity(login);
                 break;
         }
 
