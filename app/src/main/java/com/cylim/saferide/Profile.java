@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -32,7 +33,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by marco on 3/4/15.
  */
-public class Profile extends Activity {
+public class Profile extends ActionBarActivity {
     Button bUpdate, bCancel;
     TextView tvName, tvEmail;
     EditText etName;
@@ -77,7 +78,7 @@ public class Profile extends Activity {
 
                 if (editMode == false) {
                     editMode = true;
-                    bUpdate.setText("Save");
+                    bUpdate.setText(getString(R.string.save));
                     bCancel.setVisibility(View.VISIBLE);
                     etName.setVisibility(View.VISIBLE);
                     tvName.setVisibility(View.GONE);
@@ -86,7 +87,7 @@ public class Profile extends Activity {
                         UpdateProfile updateProfile = new UpdateProfile(Profile.this);
                         updateProfile.execute(PROFILE_ENDPOINT);
                     } else {
-                        Toast.makeText(Profile.this, "Please fill in your name to continue.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Profile.this, getString(R.string.fillAllFields), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -126,7 +127,7 @@ public class Profile extends Activity {
     //trigger views visibilities
     private void editModeOff() {
         editMode = false;
-        bUpdate.setText("Update Profile");
+        bUpdate.setText(getString(R.string.updateProfile));
         bCancel.setVisibility(View.GONE);
         etName.setVisibility(View.GONE);
         tvName.setVisibility(View.VISIBLE);

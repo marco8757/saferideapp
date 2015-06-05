@@ -1,9 +1,9 @@
 package com.cylim.saferide;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by marco on 30/3/15.
  */
-public class ReportLists extends Activity {
+public class ReportLists extends ActionBarActivity {
 
     private static final String REPORTS_URL = "http://mysaferide.herokuapp.com/api/v1/cameraupload.json";
     ListView lvReport;
@@ -38,7 +38,7 @@ public class ReportLists extends Activity {
 
     private void loadReportsFromServer(String url) {
         GetReportTask getReport = new GetReportTask(ReportLists.this);
-        getReport.setMessageLoading("Loading reports...");
+        getReport.setMessageLoading(getString(R.string.loadingReport));
         getReport.execute(url);
     }
 

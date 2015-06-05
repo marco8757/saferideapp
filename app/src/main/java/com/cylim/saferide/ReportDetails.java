@@ -76,14 +76,14 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
         //get url from previous activity for information retrieval
         Bundle b = getIntent().getExtras();
         URL = b.getString("ReportURL");
-        tvAuthor.setText("Reported by: " + b.getString("Name"));
+        tvAuthor.setText(getString(R.string.reported) + b.getString("Name"));
 
         loadReportsFromServer(URL);
     }
 
     private void loadReportsFromServer(String url) {
         GetReportTask getReport = new GetReportTask(ReportDetails.this);
-        getReport.setMessageLoading("Loading report...");
+        getReport.setMessageLoading(getString(R.string.loadingReport));
         getReport.execute(url);
     }
 
@@ -180,10 +180,10 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                         comment = etComment.getText().toString();
                         if (!comment.isEmpty()) {
                             PostCommentTask commentTask = new PostCommentTask(ReportDetails.this);
-                            commentTask.setMessageLoading("Posting comment...");
+                            commentTask.setMessageLoading(getString(R.string.postingComment));
                             commentTask.execute(commentURL);
                         } else {
-                            Toast.makeText(ReportDetails.this, "Please fill in comment and try again.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ReportDetails.this, getString(R.string.fillComment), Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -194,7 +194,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
                         rate = String.valueOf(rb.getRating());
 
                         RatingUpdateTask updateRate = new RatingUpdateTask(ReportDetails.this);
-                        updateRate.setMessageLoading("Rating the report...");
+                        updateRate.setMessageLoading(getString(R.string.ratingReport));
                         updateRate.execute(ratingURL);
                     }
                 });
@@ -259,7 +259,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
         protected void onPostExecute(JSONObject json) {
             try {
                 if (json.getBoolean("success")) {
-                    Toast.makeText(ReportDetails.this, "Successfully rated this report.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ReportDetails.this, getString(R.string.rateSuccessful), Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {
@@ -323,7 +323,7 @@ public class ReportDetails extends Activity implements OnMapReadyCallback {
         protected void onPostExecute(JSONObject json) {
             try {
                 if (json.getBoolean("success")) {
-                    Toast.makeText(ReportDetails.this, "Successfully posted your comment.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ReportDetails.this, getString(R.string.commentSuccessful), Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {

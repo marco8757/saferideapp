@@ -52,7 +52,7 @@ public class ReportCustomListAdapter extends ArrayAdapter<String> {
         if (!reportImage.get(position).equals(null)) {
             Picasso.with(context).load(reportImage.get(position)).into(ivPicture);
         }
-        tvCoordinate.setText("At: " + reportAddress.get(position));
+        tvCoordinate.setText("Located at: " + reportAddress.get(position));
         tvAuthor.setText("Reported by: " + reportAuthor.get(position));
 
         return ReportView;

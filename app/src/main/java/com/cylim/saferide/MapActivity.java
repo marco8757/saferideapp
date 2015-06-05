@@ -93,7 +93,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         userID = mPreferences.getString("UserID", "");
 
         //setup progress dialog
-        pDialog = ProgressDialog.show(MapActivity.this, "", "Setting up map...", true, false);
+        pDialog = ProgressDialog.show(MapActivity.this, "", getString(R.string.setupMap), true, false);
 
         //load cache from local database to avoid lag
         LoadCachedReports loadCachedReports = new LoadCachedReports();
@@ -169,7 +169,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                 //setup custom dialog for report method selection
                 final Dialog dialog = new Dialog(MapActivity.this);
                 dialog.setContentView(R.layout.custom_alert_dialog);
-                dialog.setTitle("Reporting Methods");
+                dialog.setTitle(getString(R.string.reportMethods));
 
                 Button bAuto = (Button) dialog.findViewById(R.id.bCADAuto);
                 Button bCamera = (Button) dialog.findViewById(R.id.bCADPicture);
@@ -199,7 +199,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
             case R.id.action_logout:
                 mPreferences.edit().clear().commit();
                 finish();
-                Toast.makeText(MapActivity.this, "Successfully logged out.", Toast.LENGTH_LONG).show();
+                Toast.makeText(MapActivity.this, getString(R.string.loggedOutMessage), Toast.LENGTH_LONG).show();
                 Intent login = new Intent(MapActivity.this, MainActivity.class);
                 startActivity(login);
                 break;
@@ -220,13 +220,13 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.logo)
                         //ticker message when notification first come up
-                .setTicker("SafeRide is up, drive safe!")
+                .setTicker(getString(R.string.safeRideIsUp))
                         //title of notification
-                .setContentTitle("SafeRide")
+                .setContentTitle(getString(R.string.app_name))
                         //secondary text of notification
-                .setContentText("Drive safe!")
+                .setContentText(getString(R.string.driveSafe))
                         //add actionbutton into notification
-                .addAction(R.mipmap.logo, "Stop Driving.", pIntent)
+                .addAction(R.mipmap.logo, getString(R.string.stopDriving), pIntent)
                         //set pending intent into notification
                 .setContentIntent(pIntent)
                 .setAutoCancel(true);
@@ -257,7 +257,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
                     //execute upload of image
                     NewReport nr = new NewReport(MapActivity.this);
-                    nr.setMessageLoading("Uploading picture...");
+                    nr.setMessageLoading(getString(R.string.uploadingImage));
                     nr.execute(reportURL);
 
                 } else {
@@ -267,7 +267,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
             } catch (RuntimeException e) {
                 Log.d("Dashboard", e.toString());
-                Toast.makeText(MapActivity.this, "Oops, failed to capture picture.", Toast.LENGTH_LONG).show();
+                Toast.makeText(MapActivity.this, getString(R.string.cameraFailed), Toast.LENGTH_LONG).show();
             }
 
         }
@@ -340,7 +340,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         protected void onPostExecute(JSONObject json) {
             try {
                 if (json.getBoolean("success")) {
-                    Toast.makeText(MapActivity.this, "Successfully submitted your report.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this, getString(R.string.reportSuccessful), Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {
@@ -365,7 +365,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
         protected void onPreExecute() {
             try {
                 //display progress dialog
-                progressDialog = ProgressDialog.show(MapActivity.this, "", "Loading Reports...", true, false);
+                progressDialog = ProgressDialog.show(MapActivity.this, "", getString(R.string.loadingReport), true, false);
             } catch (Exception e) {
                 Log.e("ProgressDialog", e.toString());
             }

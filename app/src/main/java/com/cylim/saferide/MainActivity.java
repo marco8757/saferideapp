@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,7 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private final static String LOGIN_API_ENDPOINT_URL = "http://mysaferide.herokuapp.com/api/v1/sessions.json";
     private final static String REGISTER_API_ENDPOINT_URL = "http://mysaferide.herokuapp.com/api/v1/registrations";
@@ -59,7 +60,7 @@ public class MainActivity extends Activity {
                 //initiation of dialog for registration
                 final Dialog d = new Dialog(MainActivity.this);
                 d.setContentView(R.layout.registration);
-                d.setTitle("Registration");
+                d.setTitle(getString(R.string.registration));
 
                 //setup items on dialog view
                 final EditText etREmail = (EditText) d.findViewById(R.id.etREmail);
@@ -77,13 +78,13 @@ public class MainActivity extends Activity {
                         //perform validation
                         if (etREmail.getText().toString().length() == 0 || etRPassword.getText().toString().length() == 0 || etRPassword2.getText().toString().length() == 0) {
                             //when input fields are empty, display a toast
-                            Toast.makeText(MainActivity.this, "Please complete all the fields",
+                            Toast.makeText(MainActivity.this, getString(R.string.fillAllFields),
                                     Toast.LENGTH_LONG).show();
                             return;
                         } else {
                             if (!etRPassword.getText().toString().equals(etRPassword2.getText().toString())) {
                                 //when password doesnt match confirmation
-                                Toast.makeText(MainActivity.this, "Password Mismatch",
+                                Toast.makeText(MainActivity.this, getString(R.string.passwordMismatch),
                                         Toast.LENGTH_LONG).show();
                                 return;
                             } else {
@@ -93,7 +94,7 @@ public class MainActivity extends Activity {
                                 rPassword2 = etRPassword2.getText().toString();
                                 //execute register async task
                                 RegisterTask registerTask = new RegisterTask(MainActivity.this);
-                                registerTask.setMessageLoading("Registering new account...");
+                                registerTask.setMessageLoading(getString(R.string.registeringNew));
                                 registerTask.execute(REGISTER_API_ENDPOINT_URL);
                                 d.dismiss();
                             }
@@ -116,14 +117,14 @@ public class MainActivity extends Activity {
                 //setup validation
                 if (etEmail.getText().toString().length() == 0 || etPassword.getText().toString().length() == 0) {
                     //when input fields are empty, display a toast
-                    Toast.makeText(MainActivity.this, "Please complete all the fields",
+                    Toast.makeText(MainActivity.this, getString(R.string.fillAllFields),
                             Toast.LENGTH_LONG).show();
                     return;
 
                 } else {
                     //when all validation passed, execute login async task
                     LoginTask loginTask = new LoginTask(MainActivity.this);
-                    loginTask.setMessageLoading("Logging in...");
+                    loginTask.setMessageLoading(getString(R.string.loggingIn));
                     loginTask.execute(LOGIN_API_ENDPOINT_URL);
                 }
             }
