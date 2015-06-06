@@ -8,7 +8,7 @@
     <string name="reportMethodsMessage">How would you like to report defects?</string>
     <string name="loggedOutMessage">Successfully logged out.</string>
     <string name="safeRideIsUp">SafeRide is up, drive safe!</string>
-    <string name="driveSafe">Drive safe!</string>
+    <string name="driveSafe">Drive safe! Tap to stop autoReport.</string>
     <string name="stopDriving">Stop Driving.</string>
     <string name="uploadingImage">Uploading picture...</string>
     <string name="autoReport">AutoReport</string>
