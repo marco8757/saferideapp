@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.savagelook.android.UrlJsonAsyncTask;
@@ -35,8 +36,12 @@ public class BackgroundCacheService extends Service {
         DatabaseHandler db = new DatabaseHandler(BackgroundCacheService.this);
         lastCached = db.getLastCachedReport();
 
-        GetReportTask getReportTask = new GetReportTask(BackgroundCacheService.this);
-        getReportTask.execute(CACHE_END_POINT_URL + lastCached + ".json");
+        try {
+            GetReportTask getReportTask = new GetReportTask(BackgroundCacheService.this);
+            getReportTask.execute(CACHE_END_POINT_URL + lastCached + ".json");
+        }catch(Exception e){
+            Log.e("CachingReport", e.getMessage().toString());
+        }
     }
 
     private class GetReportTask extends UrlJsonAsyncTask {

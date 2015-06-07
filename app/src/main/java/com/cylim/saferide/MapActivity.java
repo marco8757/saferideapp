@@ -218,7 +218,7 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
 
         //setup notification with details and intent
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.logo)
+                .setSmallIcon(R.mipmap.logo_white)
                         //ticker message when notification first come up
                 .setTicker(getString(R.string.safeRideIsUp))
                         //title of notification
@@ -226,9 +226,10 @@ public class MapActivity extends ActionBarActivity implements OnMapReadyCallback
                         //secondary text of notification
                 .setContentText(getString(R.string.driveSafe))
                         //add actionbutton into notification
-                .addAction(R.mipmap.logo, getString(R.string.stopDriving), pIntent)
+                .addAction(R.mipmap.stop, getString(R.string.stopDriving), pIntent)
                         //set pending intent into notification
                 .setContentIntent(pIntent)
+                .setOngoing(true)
                 .setAutoCancel(true);
 
         //display notification that is set up
